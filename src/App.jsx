@@ -4,6 +4,8 @@ import Header from "./components/Header";
 import ChatMessage from "./components/ChatMessage";
 import ChatInput from "./components/ChatInput";
 import { getBotResponse } from "./Data/botResponses";
+import TopicSidebar from "./components/TopicSidebar";
+
 
 function App() {
   const [input, setInput] = useState("");
@@ -15,6 +17,10 @@ function App() {
       message: "Hi! I'm DevPilot. What would you like to learn today?",
     },
   ]);
+
+  const handleTopicSelect = (topic) => {
+  setInput(`Explain ${topic}`);
+};
 
 
  const handleSend = () => {
@@ -43,6 +49,9 @@ function App() {
     <div className="app">
       <Header />
 
+        <div className="main-layout">
+      <TopicSidebar onSelectTopic={handleTopicSelect} />
+
       <main className="chat-container">
         {messages.map((item) => (
           <ChatMessage
@@ -59,7 +68,8 @@ function App() {
         />
       </main>
     </div>
+    </div>
   );
-}
+} 
 
 export default App;

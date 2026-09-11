@@ -79,6 +79,52 @@
   opacity: 0.9;
 }
 
+/* Sidebar and main layout styles */
+
+.main-layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.topic-button {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: white;
+  color: #1f2937;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topic-button:hover {
+  background-color: #f3f4f6;
+}
+
+.main-layout .chat-container {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+}
 
 /* Responsive styles for smaller screens */
 @media (max-width: 768px) {
@@ -110,4 +156,23 @@
   .chat-input button {
     padding: 12px 16px;
   }
+  .main-layout {
+  flex-direction: column;
+  padding: 20px 15px;
+  gap: 20px;
+}
+
+.sidebar {
+  width: 100%;
+}
+
+.topic-list {
+  flex-direction: row;
+  overflow-x: auto;
+}
+
+.topic-button {
+  width: auto;
+  white-space: nowrap;
+}
 }
