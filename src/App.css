@@ -46,3 +46,35 @@
   color: white;
   margin-left: auto;
 }
+
+/* Chat input styles */
+.chat-input {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  outline: none;
+}
+
+.chat-input input:focus {
+  border-color: #111827;
+}
+
+.chat-input button {
+  padding: 14px 22px;
+  border: none;
+  border-radius: 10px;
+  background-color: #111827;
+  color: white;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  opacity: 0.9;
+}
