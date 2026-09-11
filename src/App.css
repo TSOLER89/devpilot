@@ -96,30 +96,78 @@
 }
 
 .topic-selector {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  position: relative;
+  width: fit-content;
   margin-bottom: 24px;
 }
 
-.topic-selector label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #94a3b8;
-}
+.route-button {
+  list-style: none;
+  cursor: pointer;
 
-.topic-selector select {
-  min-width: 230px;
   padding: 10px 14px;
 
-  border: 1px solid #374151;
+  color: #93c5fd;
+  font-weight: 600;
+
   border-radius: 8px;
 
-  background-color: #1f2937;
-  color: white;
+  transition: background-color 0.2s ease;
+}
 
+.route-button::-webkit-details-marker {
+  display: none;
+}
+
+.route-button::after {
+  content: " ▾";
+  margin-left: 6px;
+}
+
+.topic-selector[open] .route-button::after {
+  content: " ▴";
+}
+
+.route-button:hover {
+  background-color: #1f2937;
+}
+
+.route-menu {
+  position: absolute;
+  top: 48px;
+  left: 0;
+
+  width: 210px;
+
+  padding: 8px;
+
+  background-color: #1f2937;
+
+  border: 1px solid #374151;
+  border-radius: 10px;
+
+  z-index: 10;
+}
+
+.route-menu button {
+  display: block;
+  width: 100%;
+
+  padding: 10px 12px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #e5e7eb;
+
+  text-align: left;
   cursor: pointer;
-  outline: none;
+}
+
+.route-menu button:hover {
+  background-color: #374151;
+  color: white;
 }
 
 .chat-panel {

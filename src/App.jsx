@@ -71,7 +71,7 @@ const handleQuestionSelect = (question) => {
         <div className="welcome-section">
           <span className="welcome-icon">✈</span>
 
-          <h2>Hi! I'm DevPilot.</h2>
+          <h2> Welcome aboard the Development Flight </h2>
 
           <p>
             What would you like to learn today?

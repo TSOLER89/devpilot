@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 const topics = [
   ".NET",
   "React",
@@ -10,34 +12,33 @@ const topics = [
 ];
 
 function TopicSelector({ onSelectTopic }) {
-  const handleChange = (event) => {
-    const selectedTopic = event.target.value;
+  const detailsRef = useRef(null);
 
-    if (selectedTopic) {
-      onSelectTopic(selectedTopic);
-    }
+  const handleSelect = (topic) => {
+    onSelectTopic(topic);
+
+    // Close the dropdown after choosing a topic
+    detailsRef.current?.removeAttribute("open");
   };
 
   return (
-    <div className="topic-selector">
-      <label htmlFor="topic-select">Choose your route</label>
+    <details className="topic-selector" ref={detailsRef}>
+      <summary className="route-button">
+        Choose your route
+      </summary>
 
-      <select
-        id="topic-select"
-        defaultValue=""
-        onChange={handleChange}
-      >
-        <option value="" disabled>
-          Select a development topic
-        </option>
-
+      <div className="route-menu">
         {topics.map((topic) => (
-          <option key={topic} value={topic}>
+          <button
+            key={topic}
+            type="button"
+            onClick={() => handleSelect(topic)}
+          >
             {topic}
-          </option>
+          </button>
         ))}
-      </select>
-    </div>
+      </div>
+    </details>
   );
 }
 

@@ -6,7 +6,6 @@ function Header({ onNewChat }) {
           DevPilot <span className="plane-icon">✈</span>
         </h1>
 
-        <p>Welcome aboard the Development Flight</p>
       </div>
 
       <button
