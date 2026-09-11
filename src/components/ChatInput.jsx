@@ -1,4 +1,4 @@
-function ChatInput({ input, setInput, onSend }) {
+function ChatInput({ input, setInput, onSend, inputRef }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     onSend();
@@ -11,6 +11,7 @@ function ChatInput({ input, setInput, onSend }) {
         placeholder="Ask DevPilot something..."
         value={input}
         onChange={(event) => setInput(event.target.value)}
+        ref={inputRef}
       />
 
       <button type="submit">

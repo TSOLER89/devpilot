@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "./App.css";
 
 import Header from "./components/Header";
@@ -13,6 +13,7 @@ import { getBotResponse } from "./Data/botResponses";
 
 function App() {
   const [input, setInput] = useState("");
+  const inputRef = useRef(null);
 
   const [messages, setMessages] = useState([
     {
@@ -24,10 +25,12 @@ function App() {
 
   const handleTopicSelect = (topic) => {
   setInput(`Explain ${topic}`);
+  inputRef.current.focus();
 };
 
 const handleQuestionSelect = (question) => {
   setInput(question);
+  inputRef.current.focus();
 };
 
  const handleSend = () => {
@@ -76,6 +79,7 @@ const handleQuestionSelect = (question) => {
           input={input}
           setInput={setInput}
           onSend={handleSend}
+          inputRef={inputRef}
         />
       </main>
     </div>
