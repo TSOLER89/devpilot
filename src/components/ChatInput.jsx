@@ -1,6 +1,11 @@
 function ChatInput({ input, setInput, onSend }) {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSend();
+  };
+
   return (
-    <div className="chat-input">
+    <form className="chat-input" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Ask DevPilot something..."
@@ -8,10 +13,10 @@ function ChatInput({ input, setInput, onSend }) {
         onChange={(event) => setInput(event.target.value)}
       />
 
-      <button onClick={onSend}>
+      <button type="submit">
         Send
       </button>
-    </div>
+    </form>
   );
 }
 
