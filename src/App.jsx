@@ -1,10 +1,14 @@
 import { useState } from "react";
 import "./App.css";
+
 import Header from "./components/Header";
 import ChatMessage from "./components/ChatMessage";
 import ChatInput from "./components/ChatInput";
-import { getBotResponse } from "./Data/botResponses";
+
 import TopicSidebar from "./components/TopicSidebar";
+import SuggestedQuestions from "./components/SuggestedQuestions";
+
+import { getBotResponse } from "./Data/botResponses";
 
 
 function App() {
@@ -22,6 +26,9 @@ function App() {
   setInput(`Explain ${topic}`);
 };
 
+const handleQuestionSelect = (question) => {
+  setInput(question);
+};
 
  const handleSend = () => {
   if (input.trim() === "") {
@@ -60,6 +67,10 @@ function App() {
             message={item.message}
           />
         ))}
+
+        <SuggestedQuestions
+            onSelectQuestion={handleQuestionSelect}
+        />
 
         <ChatInput
           input={input}
