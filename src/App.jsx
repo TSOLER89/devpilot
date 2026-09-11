@@ -5,24 +5,25 @@ import Header from "./components/Header";
 import ChatMessage from "./components/ChatMessage";
 import ChatInput from "./components/ChatInput";
 
-import TopicSidebar from "./components/TopicSidebar";
+import TopicSelector from "./components/TopicSelector";
 import SuggestedQuestions from "./components/SuggestedQuestions";
 
 import { getBotResponse } from "./Data/botResponses";
 
 
+const initialMessages = [];
+
 function App() {
   const [input, setInput] = useState("");
   const inputRef = useRef(null);
 
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      role: "assistant",
-      message: "Hi! I'm DevPilot. What would you like to learn today?",
-    },
-  ]);
+  const [messages, setMessages] = useState(initialMessages);
 
+  const handleNewChat = () => {
+  setMessages(initialMessages);
+  setInput("");
+  inputRef.current?.focus();
+};
   const handleTopicSelect = (topic) => {
   setInput(`Explain ${topic}`);
   inputRef.current.focus();
@@ -56,24 +57,26 @@ const handleQuestionSelect = (question) => {
 };
 
   return (
-    <div className="app">
-      <Header />
+  <div className="app">
+    <Header onNewChat={handleNewChat} />
 
-        <div className="main-layout">
-      <TopicSidebar onSelectTopic={handleTopicSelect} />
+    <main className="main-content">
 
-      <main className="chat-container">
-        {messages.map((item) => (
-          <ChatMessage
-            key={item.id}
-            role={item.role}
-            message={item.message}
-          />
-        ))}
+      <TopicSelector
+        onSelectTopic={handleTopicSelect}
+      />
 
-        <SuggestedQuestions
-            onSelectQuestion={handleQuestionSelect}
-        />
+      <section className="chat-panel">
+
+        <div className="welcome-section">
+          <span className="welcome-icon">✈</span>
+
+          <h2>Hi! I'm DevPilot.</h2>
+
+          <p>
+            What would you like to learn today?
+          </p>
+        </div>
 
         <ChatInput
           input={input}
@@ -81,10 +84,28 @@ const handleQuestionSelect = (question) => {
           onSend={handleSend}
           inputRef={inputRef}
         />
-      </main>
-    </div>
-    </div>
-  );
-} 
+
+        <div className="messages-container">
+          {messages.map((item) => (
+            <ChatMessage
+              key={item.id}
+              role={item.role}
+              message={item.message}
+            />
+          ))}
+        </div>
+
+        {messages.length === 0 && (
+          <SuggestedQuestions
+            onSelectQuestion={handleQuestionSelect}
+          />
+        )}
+
+      </section>
+
+    </main>
+  </div>
+);
+}
 
 export default App;

@@ -1,9 +1,20 @@
-function Header() {
+function Header({ onNewChat }) {
   return (
     <header className="header">
-      <h1>DevPilot</h1>
-      <p>Welcome on board!</p>
-      <p>Empowering your development journey!</p>
+      <div className="brand">
+        <h1>
+          DevPilot <span className="plane-icon">✈</span>
+        </h1>
+
+        <p>Welcome aboard the Development Flight</p>
+      </div>
+
+      <button
+        className="new-chat-button"
+        onClick={onNewChat}
+      >
+        + New Chat
+      </button>
     </header>
   );
 }
