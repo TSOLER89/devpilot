@@ -16,28 +16,6 @@ function App() {
     },
   ]);
 
-  const getBotResponse = (message) => {
-  const question = message.toLowerCase();
-
-  if (question.includes("react")) {
-    return "React is a JavaScript library for building user interfaces with reusable components.";
-  }
-
-  if (question.includes("c#")) {
-    return "C# is a programming language commonly used with .NET to build APIs, web applications, desktop applications and more.";
-  }
-
-  if (question.includes("javascript")) {
-    return "JavaScript is a programming language used to make web pages interactive.";
-  }
-
-  if (question.includes("git")) {
-    return "Git is a version control system that keeps track of changes in your project.";
-  }
-
-  return "I don't know that yet, but I'm still learning!";
-};
-
 
  const handleSend = () => {
   if (input.trim() === "") {
