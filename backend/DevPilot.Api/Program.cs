@@ -12,7 +12,23 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ChatService>();
 
+
+//koppla frontend till backend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DevPilotFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
+
+app.UseCors("DevPilotFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
