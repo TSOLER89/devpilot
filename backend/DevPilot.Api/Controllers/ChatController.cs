@@ -28,13 +28,6 @@ namespace DevPilot.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(ChatRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Message))
-            {
-                return BadRequest(new
-                {
-                    message = "Message cannot be empty"
-                });
-            }
             var answer = await _chatService.GetResponseAsync(request.Message);
 
             var response = new ChatResponse
