@@ -25,7 +25,8 @@ namespace DevPilot.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendMessage(ChatRequest request)
+        [HttpPost]
+        public async Task<IActionResult> SendMessage(ChatRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Message))
             {
@@ -34,7 +35,7 @@ namespace DevPilot.Api.Controllers
                     message = "Message cannot be empty"
                 });
             }
-            var answer = _chatService.GetResponse(request.Message);
+            var answer = await _chatService.GetResponseAsync(request.Message);
 
             var response = new ChatResponse
             {

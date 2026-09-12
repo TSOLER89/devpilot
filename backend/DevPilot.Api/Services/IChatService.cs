@@ -1,7 +1,5 @@
-﻿namespace DevPilot.Api.Services
+﻿public interface IChatService
+
 {
-    public interface IChatService
-    {
-        string GetResponse(string message);
-    }
+    Task<string> GetResponseAsync(string message);
 }
