@@ -1,4 +1,5 @@
 ﻿using DevPilot.Api.Models;
+using DevPilot.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevPilot.Api.Controllers
@@ -7,6 +8,13 @@ namespace DevPilot.Api.Controllers
     [Route("api/[controller]")]
     public class ChatController : ControllerBase
     {
+        private readonly ChatService _chatService;
+
+        public ChatController(ChatService chatService)
+        {
+            _chatService = chatService;
+        }
+
         [HttpGet("test")]
         public IActionResult Test()
         {
@@ -27,9 +35,11 @@ namespace DevPilot.Api.Controllers
                 });
             }
 
+            var answer = _chatService.GetResponse(request.Message);
+
             return Ok(new
             {
-                answer = $"DevPilot received: {request.Message}"
+                answer
             });
         }
     }
