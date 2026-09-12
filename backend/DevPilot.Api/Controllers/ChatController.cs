@@ -34,13 +34,14 @@ namespace DevPilot.Api.Controllers
                     message = "Message cannot be empty"
                 });
             }
-
             var answer = _chatService.GetResponse(request.Message);
 
-            return Ok(new
+            var response = new ChatResponse
             {
-                answer
-            });
+                Answer = answer
+            };
+
+            return Ok(response);
         }
     }
 }
