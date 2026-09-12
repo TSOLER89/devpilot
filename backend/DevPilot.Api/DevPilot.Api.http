@@ -1,6 +1,15 @@
-@DevPilot.Api_HostAddress = http://localhost:5279
+@DevPilot_Api_HostAddress = https://localhost:7040
 
-GET {{DevPilot.Api_HostAddress}}/weatherforecast/
+### Test API
+GET {{DevPilot_Api_HostAddress}}/api/chat/test
 Accept: application/json
 
 ###
+
+### Send chat message
+POST {{DevPilot_Api_HostAddress}}/api/chat
+Content-Type: application/json
+
+{
+  "message": "What is C#?"
+}

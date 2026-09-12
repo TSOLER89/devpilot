@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DevPilot.Api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DevPilot.Api.Controllers
 {
@@ -12,6 +13,23 @@ namespace DevPilot.Api.Controllers
             return Ok(new
             {
                 message = "DevPilot API is running"
+            });
+        }
+
+        [HttpPost]
+        public IActionResult SendMessage(ChatRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Message))
+            {
+                return BadRequest(new
+                {
+                    message = "Message cannot be empty"
+                });
+            }
+
+            return Ok(new
+            {
+                answer = $"DevPilot received: {request.Message}"
             });
         }
     }
