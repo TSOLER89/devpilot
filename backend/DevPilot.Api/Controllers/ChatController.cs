@@ -8,9 +8,9 @@ namespace DevPilot.Api.Controllers
     [Route("api/[controller]")]
     public class ChatController : ControllerBase
     {
-        private readonly ChatService _chatService;
+        private readonly IChatService _chatService;
 
-        public ChatController(ChatService chatService)
+        public ChatController(IChatService chatService)
         {
             _chatService = chatService;
         }

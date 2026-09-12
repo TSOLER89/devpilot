@@ -10,7 +10,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 
 //koppla frontend till backend

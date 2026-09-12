@@ -1,6 +1,6 @@
 ﻿namespace DevPilot.Api.Services
 {
-    public class ChatService
+    public class ChatService : IChatService
     {
         public string GetResponse(string message)
         {
