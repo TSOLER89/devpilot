@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IChatService, ChatService>();
 
+builder.Services.AddScoped<IAiService, MockAiService>();
 
 //koppla frontend till backend
 builder.Services.AddCors(options =>
