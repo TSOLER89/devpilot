@@ -422,6 +422,17 @@
   cursor: not-allowed;
 }
 
+.chat-input input:disabled {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.chat-input button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 
 /* =========================
    THINKING INDICATOR

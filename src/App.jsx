@@ -98,7 +98,8 @@ function App() {
       const errorMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        message: "I couldn't connect to the DevPilot API.",
+       message:
+        "⚠️ DevPilot couldn't complete this flight. Please check that the backend is running and try again.",
       };
 
       setMessages((currentMessages) => [

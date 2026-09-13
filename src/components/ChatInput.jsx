@@ -1,26 +1,35 @@
-function ChatInput({ 
-  input, 
-  setInput, 
+function ChatInput({
+  input,
+  setInput,
   onSend,
-  inputRef, 
-  isLoading
+  inputRef,
+  isLoading,
 }) {
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSend();
+
+    if (!isLoading) {
+      onSend();
+    }
   };
 
   return (
     <form className="chat-input" onSubmit={handleSubmit}>
       <input
+        ref={inputRef}
         type="text"
-        placeholder="Ask DevPilot something..."
+        placeholder={
+          isLoading
+            ? "DevPilot is preparing your response..."
+            : "Ask DevPilot something..."
+        }
         value={input}
         onChange={(event) => setInput(event.target.value)}
-        ref={inputRef}
+        disabled={isLoading}
       />
 
-      <button type="submit"
+      <button
+        type="submit"
         disabled={isLoading || input.trim() === ""}
       >
         {isLoading ? "Flying..." : "Send"}
