@@ -14,6 +14,7 @@ const initialMessages = [];
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState(initialMessages);
+  const [previousResponseId, setPreviousResponseId] = useState(null);
 
   const inputRef = useRef(null);
 
@@ -21,6 +22,7 @@ function App() {
     setMessages(initialMessages);
     setInput("");
     inputRef.current?.focus();
+    setPreviousResponseId(null);
   };
 
   const handleTopicSelect = (topic) => {
@@ -54,7 +56,8 @@ function App() {
     setInput("");
 
     try {
-      const data = await sendChatMessage(message);
+      const data = await sendChatMessage(message, previousResponseId);
+      setPreviousResponseId(data.responseId);
 
       const botMessage = {
         id: Date.now() + 1,
