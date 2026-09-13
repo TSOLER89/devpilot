@@ -1,4 +1,10 @@
-function ChatInput({ input, setInput, onSend, inputRef }) {
+function ChatInput({ 
+  input, 
+  setInput, 
+  onSend,
+  inputRef, 
+  isLoading
+}) {
   const handleSubmit = (event) => {
     event.preventDefault();
     onSend();
@@ -14,8 +20,10 @@ function ChatInput({ input, setInput, onSend, inputRef }) {
         ref={inputRef}
       />
 
-      <button type="submit">
-        Send
+      <button type="submit"
+        disabled={isLoading || input.trim() === ""}
+      >
+        {isLoading ? "Flying..." : "Send"}
       </button>
     </form>
   );

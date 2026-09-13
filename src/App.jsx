@@ -14,6 +14,8 @@ const initialMessages = [];
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState(initialMessages);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const [previousResponseId, setPreviousResponseId] = useState(null);
 
   const inputRef = useRef(null);
@@ -56,7 +58,7 @@ function App() {
   const handleSend = async () => {
     const message = input.trim();
 
-    if (message === "") {
+    if (message === "" || isLoading) {
       return;
     }
 
@@ -72,6 +74,7 @@ function App() {
     ]);
 
     setInput("");
+    setIsLoading(true);
 
     try {
       const data = await sendChatMessage(
@@ -104,6 +107,8 @@ function App() {
       ]);
 
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,6 +160,18 @@ function App() {
                 </div>
               );
             })}
+
+               {isLoading && (
+              <div className="thinking-message">
+                <span>DevPilot is thinking</span>
+
+                <span className="thinking-dots">
+                  <span>.</span>
+                  <span>.</span>
+                  <span>.</span>
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="chat-input-wrapper">
@@ -163,6 +180,7 @@ function App() {
               setInput={setInput}
               onSend={handleSend}
               inputRef={inputRef}
+              isLoading={isLoading}
             />
           </div>
         </section>
