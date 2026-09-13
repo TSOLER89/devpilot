@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 
 import Header from "./components/Header";
@@ -17,12 +17,30 @@ function App() {
   const [previousResponseId, setPreviousResponseId] = useState(null);
 
   const inputRef = useRef(null);
+  const lastMessageRef = useRef(null);
+
+  useEffect(() => {
+    if (messages.length === 0) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+
+    // Scroll only when DevPilot's answer arrives
+    if (lastMessage.role === "assistant") {
+      lastMessageRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [messages]);
 
   const handleNewChat = () => {
     setMessages(initialMessages);
     setInput("");
-    inputRef.current?.focus();
     setPreviousResponseId(null);
+
+    inputRef.current?.focus();
   };
 
   const handleTopicSelect = (topic) => {
@@ -56,7 +74,11 @@ function App() {
     setInput("");
 
     try {
-      const data = await sendChatMessage(message, previousResponseId);
+      const data = await sendChatMessage(
+        message,
+        previousResponseId
+      );
+
       setPreviousResponseId(data.responseId);
 
       const botMessage = {
@@ -105,28 +127,44 @@ function App() {
             </p>
           </div>
 
-          <ChatInput
-            input={input}
-            setInput={setInput}
-            onSend={handleSend}
-            inputRef={inputRef}
-          />
-
-          <div className="messages-container">
-            {messages.map((item) => (
-              <ChatMessage
-                key={item.id}
-                role={item.role}
-                message={item.message}
-              />
-            ))}
-          </div>
-
           {messages.length === 0 && (
             <SuggestedQuestions
               onSelectQuestion={handleQuestionSelect}
             />
           )}
+
+          <div className="messages-container">
+            {messages.map((item, index) => {
+              const isLastMessage =
+                index === messages.length - 1;
+
+              return (
+                <div
+                  key={item.id}
+                  ref={
+                    isLastMessage && item.role === "assistant"
+                      ? lastMessageRef
+                      : null
+                  }
+                  className="message-anchor"
+                >
+                  <ChatMessage
+                    role={item.role}
+                    message={item.message}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="chat-input-wrapper">
+            <ChatInput
+              input={input}
+              setInput={setInput}
+              onSend={handleSend}
+              inputRef={inputRef}
+            />
+          </div>
         </section>
       </main>
     </div>
