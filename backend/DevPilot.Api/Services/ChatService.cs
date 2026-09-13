@@ -1,4 +1,6 @@
-﻿namespace DevPilot.Api.Services
+﻿using DevPilot.Api.Models;
+
+namespace DevPilot.Api.Services
 {
     public class ChatService : IChatService
     {
@@ -9,9 +11,14 @@
             _aiService = aiService;
         }
 
-        public async Task<string> GetResponseAsync(string message)
+        public async Task<AiResult> GetResponseAsync(
+            string message,
+            string? previousResponseId)
         {
-            return await _aiService.GetAnswerAsync(message);
+            return await _aiService.GetAnswerAsync(
+                message,
+                previousResponseId
+            );
         }
     }
 }

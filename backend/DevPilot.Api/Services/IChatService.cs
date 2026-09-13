@@ -1,5 +1,12 @@
-﻿public interface IChatService
+﻿using DevPilot.Api.Models;
 
+namespace DevPilot.Api.Services
 {
-    Task<string> GetResponseAsync(string message);
+    public interface IChatService
+    {
+        Task<AiResult> GetResponseAsync(
+            string message,
+            string? previousResponseId
+        );
+    }
 }

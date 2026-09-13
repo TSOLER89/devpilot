@@ -28,11 +28,15 @@ namespace DevPilot.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(ChatRequest request)
         {
-            var answer = await _chatService.GetResponseAsync(request.Message);
+            var result = await _chatService.GetResponseAsync(
+                request.Message,
+                request.PreviousResponseId
+            );
 
             var response = new ChatResponse
             {
-                Answer = answer
+                Answer = result.Answer,
+                ResponseId = result.ResponseId
             };
 
             return Ok(response);

@@ -1,7 +1,6 @@
-﻿
-namespace DevPilot.Api.Models
+﻿namespace DevPilot.Api.Models
 {
-    public class ChatResponse
+    public class AiResult
     {
         public string Answer { get; set; } = string.Empty;
 

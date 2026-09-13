@@ -1,7 +1,12 @@
-﻿namespace DevPilot.Api.Services
+﻿using DevPilot.Api.Models;
+
+namespace DevPilot.Api.Services
 {
     public interface IAiService
     {
-        Task<string> GetAnswerAsync(string message);
+        Task<AiResult> GetAnswerAsync(
+            string message,
+            string? previousResponseId
+        );
     }
 }
