@@ -1,31 +1,54 @@
-# DevPilot
+# ✈️ DevPilot
 
-DevPilot is a responsive developer learning assistant built with React and Vite.
+DevPilot is a full-stack AI-powered developer learning assistant built with React, ASP.NET Core and OpenAI.
 
-The project is designed to help developers practice and review programming concepts such as React, JavaScript, C#, .NET and Git through an interactive chat interface.
+The application is designed to help developers learn and review programming concepts through an interactive conversational interface.
 
-This project is being developed step by step as part of my journey as a .NET System Developer.
+DevPilot focuses primarily on topics such as C#, .NET, ASP.NET Core, React, JavaScript, APIs, Git and modern web development.
 
-## Features
+---
 
-- Interactive chat interface
-- Topic-based navigation
-- Predefined developer-focused responses
-- Send messages using the button or Enter key
-- Responsive design for desktop, tablet and mobile
-- Reusable React components
+## 🚀 Features
 
-## Topics
+- AI-powered developer assistant
+- Conversational follow-up questions
+- Conversation memory
+- React-based chat interface
+- ASP.NET Core Web API backend
+- OpenAI integration
+- Markdown rendering for AI responses
+- Syntax-friendly code blocks
+- Suggested developer questions
+- Topic navigation
+- New Chat functionality
+- Loading and thinking states
+- Error handling
+- Responsive design
+- Mobile-friendly interface
+- Sticky chat input
+- Automatic scrolling to new AI responses
 
-DevPilot currently supports questions about:
+---
 
-- React
-- JavaScript
-- C#
-- .NET
-- Git
+## 🧠 Example Questions
 
-## Tech Stack
+DevPilot can answer questions such as:
+
+- What is dependency injection?
+- Explain `useState` in React
+- What is a REST API?
+- What is the difference between C# and JavaScript?
+- Give me a simple ASP.NET Core example
+- Explain async/await
+- What is Git?
+- Explain this in simpler words
+- Give me an example of that
+
+Because DevPilot maintains conversation context, users can ask follow-up questions without repeating the original topic.
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
 
@@ -34,92 +57,203 @@ DevPilot currently supports questions about:
 - JavaScript
 - HTML
 - CSS
+- React Markdown
+- remark-gfm
+
+### Backend
+
+- C#
+- .NET 10
+- ASP.NET Core Web API
+- Dependency Injection
+- REST API
+- Data Annotations
+- Swagger / OpenAPI
+
+### AI
+
+- OpenAI API
+- OpenAI .NET SDK
+- Responses API
+- Conversation context using response IDs
 
 ### Development Tools
 
+- Visual Studio
+- Visual Studio Code
 - Git
 - GitHub
-- Visual Studio Code
+- Swagger
 
-## Project Structure
+---
+
+## 🏗️ Architecture
+
+DevPilot uses a separated frontend and backend architecture.
 
 ```text
-src/
-├── components/
-│   ├── Header.jsx
-│   ├── ChatInput.jsx
-│   ├── ChatMessage.jsx
-│   └── TopicSidebar.jsx
-│
-├── data/
-│   └── botResponses.js
-│
-├── App.jsx
-├── App.css
-├── index.css
-└── main.jsx
+React / Vite
+     │
+     │ HTTP / JSON
+     ▼
+ASP.NET Core Web API
+     │
+     ▼
+ChatController
+     │
+     ▼
+IChatService
+     │
+     ▼
+ChatService
+     │
+     ▼
+IAiService
+     │
+     ▼
+OpenAiService
+     │
+     ▼
+OpenAI API
 ```
 
-Getting Started
-
-Clone the repository:
-
-git clone <https://github.com/TSOLER89/devpilot.git>
-
-Navigate to the project:
-
-cd devpilot
-
-Install dependencies:
-
-npm install
-
-Start the development server:
-
-npm run dev
-
-Then open the local URL displayed by Vite in your browser.
-
-Current Architecture
-
-React Components
+📁 Project Structure
+devpilot/
 │
-▼
-App State
+├── src/
+│ ├── components/
+│ │ ├── Header.jsx
+│ │ ├── ChatInput.jsx
+│ │ ├── ChatMessage.jsx
+│ │ ├── TopicSelector.jsx
+│ │ └── SuggestedQuestions.jsx
+│ │
+│ ├── services/
+│ │ └── chatApi.js
+│ │
+│ ├── App.jsx
+│ ├── App.css
+│ ├── index.css
+│ └── main.jsx
 │
-▼
-JavaScript Response Logic
+├── backend/
+│ └── DevPilot.Api/
+│ ├── Controllers/
+│ │ └── ChatController.cs
+│ │
+│ ├── Models/
+│ │ ├── ChatRequest.cs
+│ │ ├── ChatResponse.cs
+│ │ └── AiResult.cs
+│ │
+│ ├── Services/
+│ │ ├── IChatService.cs
+│ │ ├── ChatService.cs
+│ │ ├── IAiService.cs
+│ │ └── OpenAiService.cs
+│ │
+│ ├── Program.cs
+│ └── DevPilot.Api.csproj
+│
+├── package.json
+├── vite.config.js
+└── README.md
 
-Currently, DevPilot uses local JavaScript logic to generate responses.
+▶️ Running the Project
 
-Roadmap
+DevPilot requires both the React frontend and ASP.NET Core backend to run.
 
-Future development will include:
+1. Clone the repository
+   git clone https://github.com/TSOLER89/devpilot.git
+   cd devpilot
+2. Install frontend dependencies
+   npm install
+3. Start the React frontend
+   npm run dev
 
-ASP.NET Core Web API
-C# backend
-REST API communication between React and .NET
-Database integration
-CRUD functionality
-Saved questions
-Quiz functionality
-Improved developer learning features
-React Native mobile application
+Vite will display the local development address, normally:
 
-The goal is to evolve DevPilot into a full-stack application where the web and mobile clients can communicate with the same ASP.NET Core backend.
+http://localhost:5173
 
-Learning Goals
+4. Start the ASP.NET Core API
 
-This project is used to practice:
+Run the backend from Visual Studio or:
 
-Component-based development with React
-JSX
+dotnet run
+
+The API runs locally using HTTPS.
+
+📖 Swagger
+
+Swagger is available during development for testing the API.
+
+Example:
+
+https://localhost:7040/swagger
+
+The main chat endpoint is:
+
+POST /api/chat
+
+Example request:
+
+{
+"message": "Explain dependency injection",
+"previousResponseId": null
+}
+
+Example response:
+
+{
+"answer": "Dependency injection is...",
+"responseId": "response-id"
+}
+📱 Responsive Design
+
+DevPilot is designed to work across:
+
+Desktop
+Tablet
+Mobile
+
+The interface uses responsive CSS and adapts chat messages, navigation and controls depending on screen size.
+
+🎯 Learning Goals
+
+DevPilot was created as a learning and portfolio project while studying .NET system development.
+
+The project provides practical experience with:
+
+React component architecture
+React Hooks
+useState
+useRef
+useEffect
 Props
-State with useState
 Event handling
-JavaScript arrays and .map()
-Responsive CSS
-Git version control
-Frontend architecture
+Async JavaScript
+Fetch API
+REST APIs
+JSON
+C#
+ASP.NET Core
+Controllers
+Service layer architecture
+Interfaces
+Dependency Injection
+async/await
+Request validation
+CORS
+Swagger
+External API integration
+Secure secrets management
+AI integration
+Git and GitHub
 
-Later stages will focus on C#, ASP.NET Core, REST APIs and database development.
+👩‍💻 Author
+
+Developed by Tsoler Hayitian
+
+.NET System Developer student
+
+GitHub: TSOLER89
