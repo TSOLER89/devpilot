@@ -98,8 +98,7 @@ function App() {
       const errorMessage = {
         id: Date.now() + 1,
         role: "assistant",
-       message:
-        "⚠️ DevPilot couldn't complete this flight. Please check that the backend is running and try again.",
+      message: `⚠️ ${error.message}`,
       };
 
       setMessages((currentMessages) => [

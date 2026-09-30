@@ -18,7 +18,19 @@ export async function sendChatMessage(message, previousResponseId) {
   );
 
   if (!response.ok) {
-    throw new Error("Could not connect to DevPilot API.");
+    let errorMessage = "DevPilot could not complete the request.";
+
+    try {
+      const errorData = await response.json();
+
+      if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // Keep the default error message
+    }
+
+    throw new Error(errorMessage);
   }
 
   return await response.json();
