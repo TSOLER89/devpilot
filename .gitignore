@@ -36,3 +36,8 @@ dist-ssr
 [Rr]elease/
 x64/
 x86/
+
+# Environment variables
+.env
+.env.*
+!.env.example

@@ -1,6 +1,10 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
+
 export async function sendChatMessage(message, previousResponseId) {
   const response = await fetch(
-    "https://localhost:7040/api/chat",
+    `${API_BASE_URL}/api/chat`,
     {
       method: "POST",
       headers: {
