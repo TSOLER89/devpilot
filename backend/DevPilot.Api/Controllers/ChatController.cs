@@ -24,22 +24,34 @@ namespace DevPilot.Api.Controllers
             });
         }
 
-        [HttpPost]
+
         [HttpPost]
         public async Task<IActionResult> SendMessage(ChatRequest request)
         {
-            var result = await _chatService.GetResponseAsync(
-                request.Message,
-                request.PreviousResponseId
-            );
-
-            var response = new ChatResponse
+            try
             {
-                Answer = result.Answer,
-                ResponseId = result.ResponseId
-            };
+                var result = await _chatService.GetResponseAsync(
+                    request.Message,
+                    request.PreviousResponseId
+                );
 
-            return Ok(response);
+                var response = new ChatResponse
+                {
+                    Answer = result.Answer,
+                    ResponseId = result.ResponseId
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return StatusCode(500, new
+                {
+                    message = "DevPilot could not reach the AI service. Please try again later."
+                });
+            }
         }
     }
 }
