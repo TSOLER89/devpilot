@@ -82,7 +82,8 @@ function App() {
     try {
       const data = await sendChatMessage(
         message,
-        previousResponseId
+        previousResponseId,
+        selectedMode
       );
 
       setPreviousResponseId(data.responseId);

@@ -9,5 +9,9 @@ namespace DevPilot.Api.Models
         public string Message { get; set; } = string.Empty;
 
         public string? PreviousResponseId { get; set; }
+
+        public string Mode { get; set; } = "explain";
+
+
     }
 }
