@@ -52,11 +52,21 @@ function App() {
     inputRef.current?.focus();
   };
 
-  const handleTopicSelect = (topic) => {
-    setSelectedTopic(topic);
-    setInput(`Explain ${topic}`);
-    inputRef.current?.focus();
+const handleTopicSelect = (topic) => {
+  setSelectedTopic(topic);
+
+  const prompts = {
+    explain: `Explain ${topic}`,
+    debug: `Help me debug ${topic}`,
+    improve: `Help me improve my ${topic} code`,
+    error: `Explain an error in ${topic}`,
+    quiz: `Quiz me on ${topic}`,
   };
+
+  setInput(prompts[selectedMode] ?? `Explain ${topic}`);
+
+  inputRef.current?.focus();
+};
 
   const handleQuestionSelect = (question) => {
     setInput(question);
