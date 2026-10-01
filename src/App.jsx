@@ -192,6 +192,7 @@ function App() {
               onSend={handleSend}
               inputRef={inputRef}
               isLoading={isLoading}
+              selectedMode={selectedMode}
             />
           </div>
         </section>
