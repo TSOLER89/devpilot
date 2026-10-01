@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 const modes = [
   { id: "explain", label: "Explain" },
   { id: "debug", label: "Debug" },
@@ -6,30 +8,43 @@ const modes = [
   { id: "quiz", label: "Quiz me" },
 ];
 
-function DeveloperModeSelector({ selectedMode, onSelectMode }) {
-  return (
-    <section className="developer-modes">
-      <p className="developer-modes-label">
-        What would you like DevPilot to do?
-      </p>
+function DeveloperModeSelector({
+  selectedMode,
+  onSelectMode,
+}) {
+  const detailsRef = useRef(null);
 
-      <div className="developer-mode-buttons">
+  const selectedModeLabel =
+    modes.find((mode) => mode.id === selectedMode)?.label ??
+    "Explain";
+
+  const handleSelect = (mode) => {
+    onSelectMode(mode.id);
+
+    detailsRef.current?.removeAttribute("open");
+  };
+
+  return (
+    <details
+      className="developer-mode-selector"
+      ref={detailsRef}
+    >
+      <summary className="mode-button">
+        Mode: {selectedModeLabel}
+      </summary>
+
+      <div className="mode-menu">
         {modes.map((mode) => (
           <button
             key={mode.id}
             type="button"
-            className={
-              selectedMode === mode.id
-                ? "developer-mode-button active"
-                : "developer-mode-button"
-            }
-            onClick={() => onSelectMode(mode.id)}
+            onClick={() => handleSelect(mode)}
           >
             {mode.label}
           </button>
         ))}
       </div>
-    </section>
+    </details>
   );
 }
 

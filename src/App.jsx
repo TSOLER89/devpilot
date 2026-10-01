@@ -6,6 +6,7 @@ import ChatMessage from "./components/ChatMessage";
 import ChatInput from "./components/ChatInput";
 import TopicSelector from "./components/TopicSelector";
 import SuggestedQuestions from "./components/SuggestedQuestions";
+import DeveloperModeSelector from "./components/DeveloperModeSelector";
 
 import { sendChatMessage } from "./services/chatApi";
 
@@ -17,6 +18,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   
   const [previousResponseId, setPreviousResponseId] = useState(null);
+
+  const [selectedMode, setSelectedMode] = useState("explain");
 
   const inputRef = useRef(null);
   const lastMessageRef = useRef(null);
@@ -117,9 +120,16 @@ function App() {
       <Header onNewChat={handleNewChat} />
 
       <main className="main-content">
-        <TopicSelector
-          onSelectTopic={handleTopicSelect}
-        />
+          <div className="learning-controls">
+            <TopicSelector
+              onSelectTopic={handleTopicSelect}
+            />
+
+            <DeveloperModeSelector
+              selectedMode={selectedMode}
+              onSelectMode={setSelectedMode}
+            />
+          </div>
 
         <section className="chat-panel">
           <div className="welcome-section">

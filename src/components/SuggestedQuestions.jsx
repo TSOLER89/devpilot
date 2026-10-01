@@ -1,9 +1,7 @@
 const questions = [
-  "What is React?",
-  "What is useEffect?",
-  "What is a REST API?",
   "What is dependency injection?",
-  "Explain how useEffect works?"
+  "What is a REST API?",
+  "Explain useEffect in React",
 ];
 
 function SuggestedQuestions({ onSelectQuestion }) {
