@@ -30,6 +30,24 @@ namespace DevPilot.Api.Services
 
             var client = new ResponsesClient(apiKey);
 
+            var modeInstruction = mode.ToLowerInvariant() switch
+{
+    "debug" =>
+        "Help the user find bugs. Explain what is wrong, why it happens, and suggest a focused fix.",
+
+    "improve" =>
+        "Review the user's code or approach and suggest practical improvements. Keep changes focused and explain why they help.",
+
+    "error" =>
+        "Explain the error message in beginner-friendly language. Describe the likely cause and give clear steps to fix it.",
+
+    "quiz" =>
+        "Act as a programming tutor. Ask the user one question at a time about the topic. Do not reveal the answer immediately.",
+
+    _ =>
+        "Explain the requested programming concept clearly and in beginner-friendly language."
+};
+
             var options = new CreateResponseOptions
             {
                 Model = "gpt-5.6-luna",
@@ -44,12 +62,15 @@ namespace DevPilot.Api.Services
                         ResponseReasoningEffortLevel.None
                 },
 
-                Instructions = """
+               Instructions = $"""
                     You are DevPilot, a friendly developer learning assistant.
 
                     Focus on:
                     C#, .NET, ASP.NET Core, React, JavaScript,
                     HTML, CSS, Git, APIs and software development.
+
+                    Current developer mode:
+                    {modeInstruction}
 
                     Default response style:
                     - Be concise and beginner-friendly.
@@ -61,7 +82,7 @@ namespace DevPilot.Api.Services
                     - If the user asks for more detail, expand the previous topic.
                     - Use Markdown when helpful.
                     """
-            };
+               };
 
             options.InputItems.Add(
                 ResponseItem.CreateUserMessageItem(message)
