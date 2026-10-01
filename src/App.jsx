@@ -44,6 +44,7 @@ function App() {
     setMessages(initialMessages);
     setInput("");
     setPreviousResponseId(null);
+    setSelectedMode("explain");
 
     inputRef.current?.focus();
   };
