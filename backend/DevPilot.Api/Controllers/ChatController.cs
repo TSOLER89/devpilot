@@ -32,7 +32,8 @@ namespace DevPilot.Api.Controllers
             {
                 var result = await _chatService.GetResponseAsync(
                     request.Message,
-                    request.PreviousResponseId
+                    request.PreviousResponseId,
+                    request.Mode
                 );
 
                 var response = new ChatResponse
