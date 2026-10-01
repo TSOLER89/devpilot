@@ -5,7 +5,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export async function sendChatMessage(
   message, 
   previousResponseId,
-mode
+  mode,
+  topic,
 ) 
 {
   const response = await fetch(
@@ -19,6 +20,7 @@ mode
         message,
         previousResponseId,
         mode,
+        topic,
       }),
     }
   );
