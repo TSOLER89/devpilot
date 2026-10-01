@@ -21,6 +21,8 @@ function App() {
 
   const [selectedMode, setSelectedMode] = useState("explain");
 
+  const [selectedTopic, setSelectedTopic] = useState(null);
+
   const inputRef = useRef(null);
   const lastMessageRef = useRef(null);
 
@@ -45,11 +47,13 @@ function App() {
     setInput("");
     setPreviousResponseId(null);
     setSelectedMode("explain");
+    setSelectedTopic(null);
 
     inputRef.current?.focus();
   };
 
   const handleTopicSelect = (topic) => {
+    setSelectedTopic(topic);
     setInput(`Explain ${topic}`);
     inputRef.current?.focus();
   };
@@ -124,6 +128,7 @@ function App() {
       <main className="main-content">
           <div className="learning-controls">
             <TopicSelector
+              selectedTopic={selectedTopic}
               onSelectTopic={handleTopicSelect}
             />
 

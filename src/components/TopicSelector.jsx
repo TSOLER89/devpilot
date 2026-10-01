@@ -11,7 +11,9 @@ const topics = [
   "Git",
 ];
 
-function TopicSelector({ onSelectTopic }) {
+function TopicSelector({ 
+  selectedTopic,
+  onSelectTopic }) {
   const detailsRef = useRef(null);
 
   const handleSelect = (topic) => {
@@ -23,8 +25,10 @@ function TopicSelector({ onSelectTopic }) {
 
   return (
     <details className="topic-selector" ref={detailsRef}>
-      <summary className="route-button">
-        Choose your route
+          <summary className="route-button">
+        {selectedTopic
+          ? `Route: ${selectedTopic}`
+          : "Choose your route"}
       </summary>
 
       <div className="route-menu">
