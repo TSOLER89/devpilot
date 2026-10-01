@@ -17,7 +17,8 @@ namespace DevPilot.Api.Services
         public async Task<AiResult> GetAnswerAsync(
             string message,
             string? previousResponseId,
-            string mode)
+            string mode,
+            string? topic)
         {
             var apiKey = _configuration["OpenAI:ApiKey"];
 

@@ -7,7 +7,8 @@ namespace DevPilot.Api.Services
         Task<AiResult> GetResponseAsync(
             string message,
             string? previousResponseId,
-            string mode
+            string mode,
+            string? topic
         );
     }
 }

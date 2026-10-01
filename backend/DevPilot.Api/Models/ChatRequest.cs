@@ -12,6 +12,8 @@ namespace DevPilot.Api.Models
 
         public string Mode { get; set; } = "explain";
 
+        public string? Topic { get; set; }
+
 
     }
 }

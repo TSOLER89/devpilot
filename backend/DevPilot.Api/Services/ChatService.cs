@@ -14,12 +14,14 @@ namespace DevPilot.Api.Services
         public async Task<AiResult> GetResponseAsync(
             string message,
             string? previousResponseId,
-            string mode)
+            string mode,
+            string? topic)
         {
             return await _aiService.GetAnswerAsync(
                 message,
                 previousResponseId,
-                mode
+                mode,
+                topic
             );
         }
     }
