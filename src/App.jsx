@@ -146,6 +146,7 @@ function App() {
           {messages.length === 0 && (
             <SuggestedQuestions
               onSelectQuestion={handleQuestionSelect}
+              selectedMode={selectedMode}
             />
           )}
 
