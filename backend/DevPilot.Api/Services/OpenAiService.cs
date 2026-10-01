@@ -31,23 +31,30 @@ namespace DevPilot.Api.Services
 
             var client = new ResponsesClient(apiKey);
 
-            var modeInstruction = mode.ToLowerInvariant() switch
-{
-    "debug" =>
-        "Help the user find bugs. Explain what is wrong, why it happens, and suggest a focused fix.",
+            var modeInstruction = (mode ?? "explain").ToLowerInvariant() switch
+            {
+                "debug" =>
+                    "Help the user find bugs. Explain what is wrong, why it happens, and suggest a focused fix.",
 
-    "improve" =>
-        "Review the user's code or approach and suggest practical improvements. Keep changes focused and explain why they help.",
+                "improve" =>
+                    "Review the user's code or approach and suggest practical improvements. Keep changes focused and explain why they help.",
 
-    "error" =>
-        "Explain the error message in beginner-friendly language. Describe the likely cause and give clear steps to fix it.",
+                "error" =>
+                    "Explain the error message in beginner-friendly language. Describe the likely cause and give clear steps to fix it.",
 
-    "quiz" =>
-        "Act as a programming tutor. Ask the user one question at a time about the topic. Do not reveal the answer immediately.",
+                "quiz" =>
+                    "Act as a programming tutor. Ask the user one question at a time about the topic. Do not reveal the answer immediately.",
 
-    _ =>
-        "Explain the requested programming concept clearly and in beginner-friendly language."
-};
+                _ =>
+                    "Explain the requested programming concept clearly and in beginner-friendly language."
+            };
+                        var topicInstruction = string.IsNullOrWhiteSpace(topic)
+                ? "No specific learning route is selected."
+                : $"""
+                  The user selected the {topic} learning route.
+                  Prioritize explanations and examples related to {topic}
+                  when it is relevant to the user's question.
+                  """;
 
             var options = new CreateResponseOptions
             {
@@ -73,6 +80,10 @@ namespace DevPilot.Api.Services
                     Current developer mode:
                     {modeInstruction}
 
+                                    
+                    Current learning route:
+                    {topicInstruction}
+
                     Default response style:
                     - Be concise and beginner-friendly.
                     - Usually answer in 80-150 words.
@@ -84,6 +95,8 @@ namespace DevPilot.Api.Services
                     - Use Markdown when helpful.
                     """
                };
+
+
 
             options.InputItems.Add(
                 ResponseItem.CreateUserMessageItem(message)
