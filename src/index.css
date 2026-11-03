@@ -1,9 +1,21 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
+  --text: #334155;
+  --text-h: #0f172a;
+  --text-muted: #475569;
+  --bg: #f8fafc;
+  --bg-transparent: rgba(248, 250, 252, 0);
+  --surface: #ffffff;
+  --surface-hover: #e2e8f0;
+  --header-bg: #f1f5f9;
+  --border: #cbd5e1;
+  --code-bg: #e2e8f0;
+  --link: #1d4ed8;
+  --button-bg: #1d4ed8;
+  --button-text: #ffffff;
+  --user-bg: #dbeafe;
+  --user-text: #1e3a8a;
+  --code-block-bg: #0f172a;
+  --code-block-text: #f1f5f9;
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
@@ -17,7 +29,7 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -32,11 +44,22 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
+    color-scheme: dark;
+    --text: #e2e8f0;
     --text-h: #f3f4f6;
+    --text-muted: #94a3b8;
     --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
+    --bg-transparent: rgba(22, 23, 29, 0);
+    --surface: #1f2937;
+    --surface-hover: #374151;
+    --header-bg: #111827;
+    --border: #475569;
+    --code-bg: #334155;
+    --link: #93c5fd;
+    --button-bg: #93c5fd;
+    --button-text: #0f172a;
+    --user-bg: #1e3a5f;
+    --user-text: #eff6ff;
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
