@@ -469,12 +469,66 @@
 }
 
 .message.assistant pre code {
+  display: block;
   padding: 0;
 
   background-color: transparent;
   color: var(--code-block-text);
 
   font-weight: normal;
+}
+
+.code-block {
+  min-width: 0;
+  margin: 14px 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: var(--code-block-bg);
+}
+
+.code-block-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--code-block-text);
+  font-size: 12px;
+}
+
+.code-block-language {
+  overflow-wrap: anywhere;
+}
+
+.code-copy-button {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--code-block-text);
+  cursor: pointer;
+}
+
+.code-copy-button:hover {
+  background-color: var(--surface-hover);
+}
+
+.message.assistant .code-block pre {
+  margin: 0;
+}
+
+.message.assistant .code-block pre:focus-visible {
+  outline: 1px solid #6b8bb3;
+  outline-offset: -2px;
+}
+
+.code-copy-error {
+  display: block;
+  padding: 0 16px 12px;
+  color: var(--code-block-text);
+  font-size: 13px;
 }
 
 
