@@ -27,7 +27,11 @@ const placeholder =
 
   return (
     <form className="chat-input" onSubmit={handleSubmit}>
+      <label className="sr-only" htmlFor="chat-message">
+        Message to DevPilot
+      </label>
       <input
+        id="chat-message"
         ref={inputRef}
         type="text"
         placeholder={

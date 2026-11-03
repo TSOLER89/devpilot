@@ -6,6 +6,7 @@ function ChatMessage({ role, message }) {
 
   return (
     <div className={`message ${role}`}>
+      <span className="sr-only">{isAssistant ? "DevPilot: " : "You: "}</span>
       {isAssistant ? (
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {message}

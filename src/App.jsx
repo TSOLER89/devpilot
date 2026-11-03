@@ -169,7 +169,13 @@ const handleTopicSelect = (topic) => {
             />
           )}
 
-          <div className="messages-container">
+          <div
+            className="messages-container"
+            role="log"
+            aria-label="Conversation with DevPilot"
+            aria-live="polite"
+            aria-relevant="additions text"
+          >
             {messages.map((item, index) => {
               const isLastMessage =
                 index === messages.length - 1;
@@ -192,16 +198,23 @@ const handleTopicSelect = (topic) => {
               );
             })}
 
-               {isLoading && (
-              <div className="thinking-message">
+          </div>
+
+          <div
+            className={isLoading ? "thinking-message" : "sr-only"}
+            role="status"
+            aria-atomic="true"
+          >
+            {isLoading && (
+              <>
                 <span>DevPilot is thinking</span>
 
-                <span className="thinking-dots">
+                <span className="thinking-dots" aria-hidden="true">
                   <span>.</span>
                   <span>.</span>
                   <span>.</span>
                 </span>
-              </div>
+              </>
             )}
           </div>
 
