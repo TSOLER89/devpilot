@@ -150,15 +150,17 @@ const handleTopicSelect = (topic) => {
           </div>
 
         <section className={`chat-panel${messages.length === 0 ? " chat-panel--empty" : ""}`}>
-          <div className="welcome-section">
-            <span className="welcome-icon">✈</span>
+          {messages.length === 0 && (
+            <div className="welcome-section">
+              <span className="welcome-icon">✈</span>
 
-            <h2>Welcome aboard the Development Flight</h2>
+              <h2>Welcome aboard the Development Flight</h2>
 
-            <p>
-              What would you like to learn today?
-            </p>
-          </div>
+              <p>
+                What would you like to learn today?
+              </p>
+            </div>
+          )}
 
           {messages.length === 0 && (
             <SuggestedQuestions
