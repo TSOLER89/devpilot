@@ -149,7 +149,7 @@ const handleTopicSelect = (topic) => {
             />
           </div>
 
-        <section className="chat-panel">
+        <section className={`chat-panel${messages.length === 0 ? " chat-panel--empty" : ""}`}>
           <div className="welcome-section">
             <span className="welcome-icon">✈</span>
 
