@@ -12,6 +12,7 @@ import FlyingLogo from "./components/FlyingLogo";
 import QuizAcademy from "./components/QuizAcademy";
 
 import { sendChatMessage } from "./services/chatApi";
+import { playChatTakeoff, stopChatSounds } from "./services/chatSounds";
 
 const initialMessages = [];
 const soundPreferenceKey = "devpilot.soundEnabled";
@@ -52,6 +53,11 @@ function App() {
   const activeRequestRef = useRef(0);
   const requestControllerRef = useRef(null);
 
+  const handleToggleSound = () => {
+    if (soundEnabled) stopChatSounds();
+    setSoundEnabled((enabled) => !enabled);
+  };
+
   useEffect(() => {
     if (messages.length === 0) {
       return;
@@ -71,9 +77,11 @@ function App() {
   useEffect(() => () => {
     activeRequestRef.current += 1;
     requestControllerRef.current?.abort();
+    stopChatSounds();
   }, []);
 
   const handleNewChat = () => {
+    stopChatSounds();
     activeRequestRef.current += 1;
     requestControllerRef.current?.abort();
     requestControllerRef.current = null;
@@ -118,7 +126,7 @@ const handleTopicSelect = (topic) => {
   const handleSend = async () => {
     const message = input.trim();
 
-    if (message === "" || isLoading) {
+    if (message === "" || isLoading || requestControllerRef.current) {
       return;
     }
 
@@ -140,6 +148,8 @@ const handleTopicSelect = (topic) => {
 
     setInput("");
     setIsLoading(true);
+
+    void playChatTakeoff(soundEnabled);
 
     try {
       const conversationHistory =
@@ -207,7 +217,7 @@ const handleTopicSelect = (topic) => {
         onNewChat={handleNewChat}
         onHome={() => setActiveView("chat")}
         soundEnabled={soundEnabled}
-        onToggleSound={() => setSoundEnabled((enabled) => !enabled)}
+        onToggleSound={handleToggleSound}
       />
 
       <main className="main-content">
