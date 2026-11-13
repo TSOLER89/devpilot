@@ -14,6 +14,8 @@ namespace DevPilot.Api.Models
 
         public string? Topic { get; set; }
 
+        public string Provider { get; set; } = "openai";
 
+        public List<ChatHistoryMessage> ConversationHistory { get; set; } = [];
     }
 }

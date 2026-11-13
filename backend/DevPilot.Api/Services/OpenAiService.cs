@@ -45,6 +45,12 @@ namespace DevPilot.Api.Services
                 "quiz" =>
                     "Act as a programming tutor. Ask the user one question at a time about the topic. Do not reveal the answer immediately.",
 
+                "teach" =>
+                    "Teach the requested concept step by step, with a small example and a brief check for understanding when useful.",
+
+                "plan" =>
+                    "Create a clear, ordered, actionable plan. State important assumptions and keep each step practical.",
+
                 _ =>
                     "Explain the requested programming concept clearly and in beginner-friendly language."
             };
