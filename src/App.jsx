@@ -278,16 +278,18 @@ const handleTopicSelect = (topic) => {
             )}
           </div>
 
-          <div className="chat-input-wrapper">
-            <ChatInput
-              input={input}
-              setInput={setInput}
-              onSend={handleSend}
-              inputRef={inputRef}
-              isLoading={isLoading}
-              selectedMode={selectedMode}
-            />
-          </div>
+          {!isLoading && (
+            <div className="chat-input-wrapper">
+              <ChatInput
+                input={input}
+                setInput={setInput}
+                onSend={handleSend}
+                inputRef={inputRef}
+                isLoading={isLoading}
+                selectedMode={selectedMode}
+              />
+            </div>
+          )}
         </section>
       </main>
     </div>
