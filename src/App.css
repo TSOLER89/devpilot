@@ -66,6 +66,36 @@
   color: var(--text-muted);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.sound-toggle-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.sound-toggle-button:hover {
+  background-color: var(--surface-hover);
+}
+
+.sound-toggle-button[aria-pressed="true"] {
+  border-color: var(--link);
+  color: var(--link);
+}
+
 .new-chat-button {
   padding: 10px 16px;
 
@@ -958,6 +988,7 @@
 @media (max-width: 768px) {
   .header {
     height: auto;
+    flex-wrap: wrap;
 
     padding: 18px 20px;
 
