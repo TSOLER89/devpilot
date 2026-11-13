@@ -1,72 +1,40 @@
-let activeContext = null;
+let activeAudio = null;
 
 export function stopQuizSounds() {
-  const context = activeContext;
-  activeContext = null;
+  const audio = activeAudio;
+  activeAudio = null;
+  if (!audio) return;
 
-  if (context && context.state !== "closed") {
-    void context.close().catch(() => {
-      // Audio is optional; closing it must not interrupt the quiz.
-    });
+  audio.onended = null;
+  audio.onerror = null;
+  try {
+    audio.pause();
+    audio.currentTime = 0;
+  } catch {
+    // Optional audio must not interrupt the quiz or navigation.
   }
 }
 
 export async function playQuizCompletionSound(soundEnabled) {
-  if (!soundEnabled) {
-    return;
-  }
-
-  const AudioContext = globalThis.AudioContext || globalThis.webkitAudioContext;
-  if (!AudioContext) {
-    return;
-  }
-
   stopQuizSounds();
-  let context;
+  if (!soundEnabled || !globalThis.Audio) return;
 
+  let audio;
   try {
-    // Created in the submission handler to respect browser autoplay rules.
-    context = new AudioContext();
-    activeContext = context;
-    if (context.state === "suspended") {
-      await context.resume();
-    }
+    const baseUrl = import.meta.env?.BASE_URL ?? "/";
+    audio = new Audio(`${baseUrl}sounds/quiz-complete.wav`);
+    audio.volume = 0.25;
+    audio.loop = false;
+    activeAudio = audio;
 
-    // Muting or restarting may have cancelled playback while resume was pending.
-    if (activeContext !== context || context.state !== "running") {
-      if (activeContext === context) stopQuizSounds();
-      return;
-    }
-
-    // A gentle descending "ding-dong", inspired by airport announcements.
-    const notes = [659.25, 523.25];
-
-    let start = context.currentTime;
-    notes.forEach((frequency, index) => {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const isLastNote = index === notes.length - 1;
-      const duration = isLastNote ? 0.32 : 0.18;
-
-      oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(frequency, start);
-      gain.gain.setValueAtTime(0, start);
-      gain.gain.linearRampToValueAtTime(0.035, start + 0.015);
-      gain.gain.linearRampToValueAtTime(0, start + duration);
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-
-      oscillator.onended = () => {
-        oscillator.disconnect();
-        gain.disconnect();
-        if (isLastNote && activeContext === context) stopQuizSounds();
-      };
-      oscillator.start(start);
-      oscillator.stop(start + duration);
-      start += duration + 0.02;
-    });
+    const release = () => {
+      if (activeAudio === audio) stopQuizSounds();
+    };
+    audio.onended = release;
+    audio.onerror = release;
+    await audio.play();
   } catch {
-    if (activeContext === context) stopQuizSounds();
-    // Missing or blocked audio must never prevent answer submission.
+    // Missing files, unsupported formats, or blocked playback leave the quiz usable.
+    if (activeAudio === audio) stopQuizSounds();
   }
 }

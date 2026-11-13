@@ -2,114 +2,88 @@ import assert from "node:assert/strict";
 import { afterEach, beforeEach, test } from "node:test";
 import { playQuizCompletionSound, stopQuizSounds } from "./quizSounds.js";
 
-const originalAudioContext = globalThis.AudioContext;
-const originalWebkitAudioContext = globalThis.webkitAudioContext;
-let contexts;
+const originalAudio = globalThis.Audio;
+let instances;
 
 beforeEach(() => {
-  contexts = [];
-  globalThis.webkitAudioContext = undefined;
-  globalThis.AudioContext = class {
-    state = "suspended";
-    currentTime = 10;
-    destination = {};
-    notes = [];
-    levels = [];
-
-    constructor() {
-      contexts.push(this);
+  instances = [];
+  globalThis.Audio = class {
+    currentTime = 0;
+    paused = false;
+    plays = 0;
+    constructor(src) {
+      this.src = src;
+      instances.push(this);
     }
-
-    async resume() { this.state = "running"; }
-    async close() { this.state = "closed"; }
-
-    createOscillator() {
-      const note = {
-        frequency: { setValueAtTime: (value) => { note.pitch = value; } },
-        connect() {},
-        disconnect() {},
-        start(time) { note.startTime = time; },
-        stop(time) { note.stopTime = time; },
-      };
-      this.notes.push(note);
-      return note;
-    }
-
-    createGain() {
-      return {
-        gain: {
-          setValueAtTime() {},
-          linearRampToValueAtTime: (value) => this.levels.push(value),
-        },
-        connect() {},
-        disconnect() {},
-      };
-    }
+    async play() { this.plays += 1; }
+    pause() { this.paused = true; }
   };
 });
 
 afterEach(() => {
   stopQuizSounds();
-  globalThis.AudioContext = originalAudioContext;
-  globalThis.webkitAudioContext = originalWebkitAudioContext;
+  globalThis.Audio = originalAudio;
 });
 
-test("muted quizzes never create an audio context", async () => {
+test("sound stays silent while disabled", async () => {
   await playQuizCompletionSound(false);
-  assert.equal(contexts.length, 0);
+  assert.equal(instances.length, 0);
 });
 
-test("missing or blocked AudioContext does not reject playback", async () => {
-  globalThis.AudioContext = undefined;
-  await assert.doesNotReject(playQuizCompletionSound(true));
-  globalThis.AudioContext = class {
-    constructor() { throw new Error("Audio blocked"); }
-  };
-  await assert.doesNotReject(playQuizCompletionSound(true));
-});
-
-test("completion plays a short two-note chime at low gain and releases audio", async () => {
+test("quiz completion plays the WAV once at 25% volume without looping", async () => {
   await playQuizCompletionSound(true);
-  const context = contexts[0];
-  assert.deepEqual(context.notes.map((note) => note.pitch), [659.25, 523.25]);
-  assert.ok(context.notes[1].startTime > context.notes[0].stopTime);
-  assert.ok(context.notes[1].stopTime - context.notes[0].startTime < 0.6);
-  assert.ok(context.levels.every((level) => level >= 0 && level <= 0.035));
-  context.notes.at(-1).onended();
-  assert.equal(context.state, "closed");
+  assert.equal(instances[0].src, "/sounds/quiz-complete.wav");
+  assert.equal(instances[0].volume, 0.25);
+  assert.equal(instances[0].loop, false);
+  assert.equal(instances[0].plays, 1);
 });
 
-test("completion can play again after stopping for a new quiz", async () => {
+test("starting again stops and rewinds previous playback", async () => {
   await playQuizCompletionSound(true);
-  stopQuizSounds();
+  instances[0].currentTime = 3;
   await playQuizCompletionSound(true);
-  assert.equal(contexts[0].state, "closed");
-  assert.equal(contexts[1].notes.length, 2);
+  assert.equal(instances[0].paused, true);
+  assert.equal(instances[0].currentTime, 0);
+  assert.equal(instances[1].plays, 1);
 });
 
-test("muting cancels playback even while browser resume is pending", async () => {
-  let finishResume;
-  globalThis.AudioContext.prototype.resume = function () {
-    return new Promise((resolve) => {
-      finishResume = () => { this.state = "running"; resolve(); };
-    });
-  };
+test("mute and Try Again cleanup stops even pending playback", async () => {
+  let rejectPlay;
+  globalThis.Audio.prototype.play = () => new Promise((_, reject) => { rejectPlay = reject; });
   const pending = playQuizCompletionSound(true);
   stopQuizSounds();
-  finishResume();
+  assert.equal(instances[0].paused, true);
+  rejectPlay(new Error("Playback interrupted"));
+  await assert.doesNotReject(pending);
+});
+
+test("an older playback rejection cannot stop a newer sound", async () => {
+  let rejectPlay;
+  globalThis.Audio.prototype.play = () => new Promise((_, reject) => { rejectPlay = reject; });
+  const pending = playQuizCompletionSound(true);
+  globalThis.Audio.prototype.play = async function () { this.plays += 1; };
+  await playQuizCompletionSound(true);
+  rejectPlay(new Error("Old playback interrupted"));
   await pending;
-  assert.equal(contexts[0].notes.length, 0);
+  assert.equal(instances[1].paused, false);
 });
 
-test("resume rejection is handled and releases the audio context", async () => {
-  globalThis.AudioContext.prototype.resume = async () => { throw new Error("Not allowed"); };
+test("ended and failed audio are released gracefully", async () => {
+  for (const event of ["onended", "onerror"]) {
+    await playQuizCompletionSound(true);
+    const audio = instances.at(-1);
+    audio[event]();
+    assert.equal(audio.paused, true);
+    assert.equal(audio.onended, null);
+    assert.equal(audio.onerror, null);
+  }
+});
+
+test("unsupported Audio and blocked playback do not reject", async () => {
+  globalThis.Audio = undefined;
   await assert.doesNotReject(playQuizCompletionSound(true));
-  assert.equal(contexts[0].state, "closed");
-});
-
-test("a new completion chime closes the previous context", async () => {
-  await playQuizCompletionSound(true);
-  await playQuizCompletionSound(true);
-  assert.equal(contexts[0].state, "closed");
-  assert.equal(contexts[1].state, "running");
+  globalThis.Audio = class {
+    constructor() { throw new Error("Audio unavailable"); }
+  };
+  await assert.doesNotReject(playQuizCompletionSound(true));
 });
