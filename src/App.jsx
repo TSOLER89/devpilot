@@ -7,6 +7,7 @@ import ChatInput from "./components/ChatInput";
 import TopicSelector from "./components/TopicSelector";
 import SuggestedQuestions from "./components/SuggestedQuestions";
 import DeveloperModeSelector from "./components/DeveloperModeSelector";
+import FlyingLogo from "./components/FlyingLogo";
 
 import { sendChatMessage } from "./services/chatApi";
 
@@ -152,7 +153,7 @@ const handleTopicSelect = (topic) => {
         <section className={`chat-panel${messages.length === 0 ? " chat-panel--empty" : ""}`}>
           {messages.length === 0 && (
             <div className="welcome-section">
-              <span className="welcome-icon">✈</span>
+              <FlyingLogo isLoading={isLoading} />
 
               <h2>Welcome aboard the Development Flight</h2>
 

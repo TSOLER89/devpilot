@@ -276,12 +276,60 @@
   margin: 30px 0 28px;
 }
 
-.welcome-icon {
-  display: block;
+.flying-logo {
+  --orbit-duration: 8s;
 
-  margin-bottom: 10px;
+  position: relative;
+  width: 96px;
+  height: 42px;
+  margin: 0 auto 10px;
+}
 
-  font-size: 28px;
+.flying-logo__orbit {
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(125, 190, 245, 0.55);
+  border-radius: 50%;
+  box-shadow: 0 0 9px rgba(170, 59, 255, 0.12);
+}
+
+.flying-logo__code {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  color: var(--link);
+  transform: translate(-50%, -50%);
+}
+
+.flying-logo__plane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15px;
+  height: 15px;
+  color: #4b9de5;
+  offset-path: ellipse(44px 18px at 50% 50%);
+  offset-distance: 0%;
+  offset-rotate: auto;
+  animation: flying-logo-orbit var(--orbit-duration) linear infinite;
+}
+
+.flying-logo--loading {
+  --orbit-duration: 3s;
+}
+
+@keyframes flying-logo-orbit {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flying-logo__plane {
+    animation: none;
+  }
 }
 
 .welcome-section h2 {
