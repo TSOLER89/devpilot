@@ -30,7 +30,11 @@ function FlyingLogo({ isLoading }: FlyingLogoProps) {
         viewBox="0 0 24 24"
         aria-hidden="true"
       >
-        <path d="M22 12 3 5.5v4l10 2.5-10 2.5v4L22 12Z" fill="currentColor" />
+        <path
+          d="M12 2.5c-.8 0-1.5.7-1.5 1.5v5L4 13v2l6.5-2v5l-2 1.5V21l3.5-1 3.5 1v-1.5l-2-1.5v-5L20 15v-2l-6.5-4V4c0-.8-.7-1.5-1.5-1.5Z"
+          fill="currentColor"
+          transform="rotate(90 12 12)"
+        />
       </svg>
     </div>
   );
