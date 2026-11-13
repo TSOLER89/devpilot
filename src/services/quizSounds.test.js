@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, test } from "node:test";
-import { playQuizSound, stopQuizSounds } from "./quizSounds.js";
+import { playQuizCompletionSound, stopQuizSounds } from "./quizSounds.js";
 
 const originalAudioContext = globalThis.AudioContext;
 const originalWebkitAudioContext = globalThis.webkitAudioContext;
@@ -55,41 +55,36 @@ afterEach(() => {
 });
 
 test("muted quizzes never create an audio context", async () => {
-  await playQuizSound(false, true, true);
+  await playQuizCompletionSound(false);
   assert.equal(contexts.length, 0);
 });
 
 test("missing or blocked AudioContext does not reject playback", async () => {
   globalThis.AudioContext = undefined;
-  await assert.doesNotReject(playQuizSound(true, true, false));
+  await assert.doesNotReject(playQuizCompletionSound(true));
   globalThis.AudioContext = class {
     constructor() { throw new Error("Audio blocked"); }
   };
-  await assert.doesNotReject(playQuizSound(true, true, false));
+  await assert.doesNotReject(playQuizCompletionSound(true));
 });
 
-test("correct feedback uses rising notes at low gain and releases audio", async () => {
-  await playQuizSound(true, true, false);
+test("completion plays a short two-note chime at low gain and releases audio", async () => {
+  await playQuizCompletionSound(true);
   const context = contexts[0];
-  assert.deepEqual(context.notes.map((note) => note.pitch), [523.25, 659.25]);
+  assert.deepEqual(context.notes.map((note) => note.pitch), [659.25, 523.25]);
+  assert.ok(context.notes[1].startTime > context.notes[0].stopTime);
+  assert.ok(context.notes[1].stopTime - context.notes[0].startTime < 0.6);
   assert.ok(context.levels.every((level) => level >= 0 && level <= 0.035));
   context.notes.at(-1).onended();
   assert.equal(context.state, "closed");
 });
 
-test("incorrect feedback is a single low note", async () => {
-  await playQuizSound(true, false, false);
-  assert.deepEqual(contexts[0].notes.map((note) => note.pitch), [196]);
-});
-
-test("completion melody follows the final answer feedback without overlap", async () => {
-  for (const correct of [true, false]) {
-    await playQuizSound(true, correct, true);
-    const notes = contexts.at(-1).notes;
-    assert.deepEqual(notes.slice(-4).map((note) => note.pitch), [523.25, 659.25, 783.99, 1046.5]);
-    assert.equal(notes.length, correct ? 6 : 5);
-    assert.ok(notes.slice(1).every((note, index) => note.startTime > notes[index].stopTime));
-  }
+test("completion can play again after stopping for a new quiz", async () => {
+  await playQuizCompletionSound(true);
+  stopQuizSounds();
+  await playQuizCompletionSound(true);
+  assert.equal(contexts[0].state, "closed");
+  assert.equal(contexts[1].notes.length, 2);
 });
 
 test("muting cancels playback even while browser resume is pending", async () => {
@@ -99,7 +94,7 @@ test("muting cancels playback even while browser resume is pending", async () =>
       finishResume = () => { this.state = "running"; resolve(); };
     });
   };
-  const pending = playQuizSound(true, true, true);
+  const pending = playQuizCompletionSound(true);
   stopQuizSounds();
   finishResume();
   await pending;
@@ -108,13 +103,13 @@ test("muting cancels playback even while browser resume is pending", async () =>
 
 test("resume rejection is handled and releases the audio context", async () => {
   globalThis.AudioContext.prototype.resume = async () => { throw new Error("Not allowed"); };
-  await assert.doesNotReject(playQuizSound(true, true, false));
+  await assert.doesNotReject(playQuizCompletionSound(true));
   assert.equal(contexts[0].state, "closed");
 });
 
-test("a new feedback sequence closes the previous context", async () => {
-  await playQuizSound(true, true, false);
-  await playQuizSound(true, false, false);
+test("a new completion chime closes the previous context", async () => {
+  await playQuizCompletionSound(true);
+  await playQuizCompletionSound(true);
   assert.equal(contexts[0].state, "closed");
   assert.equal(contexts[1].state, "running");
 });

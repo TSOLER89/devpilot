@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { quizQuestions } from "../Data/quizQuestions";
-import { playQuizSound, stopQuizSounds } from "../services/quizSounds";
+import { playQuizCompletionSound, stopQuizSounds } from "../services/quizSounds";
 
 function QuizAcademy({ soundEnabled = false }) {
   const submittedQuestions = useRef(new Set());
@@ -36,11 +36,9 @@ function QuizAcademy({ soundEnabled = false }) {
     }
     submittedQuestions.current.add(currentQuestion.id);
 
-    void playQuizSound(
-      soundEnabled,
-      selectedAnswer === currentQuestion.correctAnswer,
-      currentQuestionIndex === quizQuestions.length - 1,
-    );
+    if (currentQuestionIndex === quizQuestions.length - 1) {
+      void playQuizCompletionSound(soundEnabled);
+    }
 
     setRecordedAnswers((answers) => ({
       ...answers,

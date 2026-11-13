@@ -11,7 +11,7 @@ export function stopQuizSounds() {
   }
 }
 
-export async function playQuizSound(soundEnabled, isCorrect, isCompleted) {
+export async function playQuizCompletionSound(soundEnabled) {
   if (!soundEnabled) {
     return;
   }
@@ -38,22 +38,15 @@ export async function playQuizSound(soundEnabled, isCorrect, isCompleted) {
       return;
     }
 
-    const notes = isCorrect ? [523.25, 659.25] : [196];
-    if (isCompleted) {
-      notes.push(null, 523.25, 659.25, 783.99, 1046.5);
-    }
+    // A gentle descending "ding-dong", inspired by airport announcements.
+    const notes = [659.25, 523.25];
 
     let start = context.currentTime;
     notes.forEach((frequency, index) => {
-      if (frequency === null) {
-        start += 0.12;
-        return;
-      }
-
       const oscillator = context.createOscillator();
       const gain = context.createGain();
       const isLastNote = index === notes.length - 1;
-      const duration = isLastNote ? 0.22 : 0.12;
+      const duration = isLastNote ? 0.32 : 0.18;
 
       oscillator.type = "sine";
       oscillator.frequency.setValueAtTime(frequency, start);
