@@ -1,6 +1,6 @@
 # ✈️ DevPilot
 
-DevPilot is a full-stack AI-powered developer learning assistant built with React, ASP.NET Core and OpenAI.
+DevPilot is a full-stack AI-powered developer learning assistant built with React, ASP.NET Core, Ollama and OpenAI.
 
 The application is designed to help developers learn and review programming concepts through an interactive conversational interface.
 
@@ -15,6 +15,7 @@ DevPilot focuses primarily on topics such as C#, .NET, ASP.NET Core, React, Java
 - Conversation memory
 - React-based chat interface
 - ASP.NET Core Web API backend
+- Local Ollama integration
 - OpenAI integration
 - Markdown rendering for AI responses
 - Syntax-friendly code blocks
@@ -72,10 +73,11 @@ Because DevPilot maintains conversation context, users can ask follow-up questio
 
 ### AI
 
+- Ollama local API (`qwen2.5-coder:7b`)
 - OpenAI API
 - OpenAI .NET SDK
 - Responses API
-- Conversation context using response IDs
+- Conversation context using Ollama message history and OpenAI response IDs
 
 ### Development Tools
 
@@ -100,21 +102,9 @@ ASP.NET Core Web API
      │
      ▼
 ChatController
+     ├─────────────► OllamaService ──► Ollama local API
      │
-     ▼
-IChatService
-     │
-     ▼
-ChatService
-     │
-     ▼
-IAiService
-     │
-     ▼
-OpenAiService
-     │
-     ▼
-OpenAI API
+     └─────────────► ChatService ──► OpenAiService ──► OpenAI API
 ```
 
 📁 Project Structure
@@ -125,6 +115,7 @@ devpilot/
 │ │ ├── Header.jsx
 │ │ ├── ChatInput.jsx
 │ │ ├── ChatMessage.jsx
+│ │ ├── ChatProviderSelector.jsx
 │ │ ├── TopicSelector.jsx
 │ │ └── SuggestedQuestions.jsx
 │ │
@@ -150,7 +141,9 @@ devpilot/
 │ │ ├── IChatService.cs
 │ │ ├── ChatService.cs
 │ │ ├── IAiService.cs
-│ │ └── OpenAiService.cs
+│ │ ├── OpenAiService.cs
+│ │ ├── IOllamaService.cs
+│ │ └── OllamaService.cs
 │ │
 │ ├── Program.cs
 │ └── DevPilot.Api.csproj
@@ -161,53 +154,79 @@ devpilot/
 
 ▶️ Running the Project
 
-DevPilot requires both the React frontend and ASP.NET Core backend to run.
+DevPilot requires Node.js, the .NET 10 SDK, and Ollama. Ollama runs locally; React only communicates with the ASP.NET Core backend.
 
-1. Clone the repository
-   git clone https://github.com/TSOLER89/devpilot.git
-   cd devpilot
-2. Install frontend dependencies
-   npm install
-3. Start the React frontend
-   npm run dev
+### Install and configure Ollama
 
-Vite will display the local development address, normally:
+Install Ollama for Windows, then download the configured model:
 
-http://localhost:5173
+```powershell
+ollama pull qwen2.5-coder:7b
+ollama list
+```
 
-4. Start the ASP.NET Core API
+Ollama normally starts its local service automatically. If it is not running, start it with `ollama serve`. The backend defaults are in `backend/DevPilot.Api/appsettings.json`:
 
-Run the backend from Visual Studio or:
-
-dotnet run
-
-The API runs locally using HTTPS.
-
-📖 Swagger
-
-Swagger is available during development for testing the API.
-
-Example:
-
-https://localhost:7040/swagger
-
-The main chat endpoint is:
-
-POST /api/chat
-
-Example request:
-
+```json
 {
-"message": "Explain dependency injection",
-"previousResponseId": null
+  "Ollama": {
+    "BaseUrl": "http://localhost:11434",
+    "Model": "qwen2.5-coder:7b",
+    "TimeoutSeconds": 120,
+    "NumPredict": 400
+  }
 }
+```
 
-Example response:
+Override these values in `appsettings.Development.json` as needed. The timeout is in seconds.
 
+### Start the backend and frontend
+
+In the first terminal, from the repository root:
+
+```powershell
+dotnet run --project backend\DevPilot.Api\DevPilot.Api.csproj --launch-profile http
+```
+
+In a second terminal:
+
+```powershell
+npm install
+npm run dev
+```
+
+Vite normally serves the frontend at `http://localhost:5173`. Configure `VITE_API_BASE_URL=http://localhost:5279` in the frontend `.env` file if it is not already set. The API Swagger UI is available at `http://localhost:5279/swagger`.
+
+The frontend defaults to **Ollama (Local AI)** during development. Use the **AI provider** selector to switch to **OpenAI**. OpenAI still requires its API key to be configured on the backend, for example with:
+
+```powershell
+dotnet user-secrets set "OpenAI:ApiKey" "YOUR_API_KEY" --project backend\DevPilot.Api\DevPilot.Api.csproj
+```
+
+Both providers use the backend `POST /api/chat` endpoint. Ollama requests include recent conversation history and are sent with `stream: false`. Cancelling a request or starting a new chat aborts the pending frontend request.
+
+### API example
+
+```json
 {
-"answer": "Dependency injection is...",
-"responseId": "response-id"
+  "message": "Explain dependency injection",
+  "provider": "ollama",
+  "mode": "explain",
+  "topic": ".NET",
+  "conversationHistory": []
 }
+```
+
+### Validation
+
+```powershell
+npm run build
+npm test
+npm run lint
+dotnet build backend\DevPilot.Api\DevPilot.Api.csproj
+```
+
+The API currently has no dedicated backend test project.
 📱 Responsive Design
 
 DevPilot is designed to work across:

@@ -20,6 +20,8 @@ function ChatInput({
   improve: "Paste code you want to improve...",
   error: "Paste the error message here...",
   quiz: "Enter a topic you want to be quizzed on...",
+  teach: "What would you like DevPilot to teach you?",
+  plan: "What would you like to plan?",
 };
 
 const placeholder =

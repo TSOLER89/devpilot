@@ -7,6 +7,7 @@ import ChatInput from "./components/ChatInput";
 import TopicSelector from "./components/TopicSelector";
 import SuggestedQuestions from "./components/SuggestedQuestions";
 import DeveloperModeSelector from "./components/DeveloperModeSelector";
+import ChatProviderSelector from "./components/ChatProviderSelector";
 import FlyingLogo from "./components/FlyingLogo";
 
 import { sendChatMessage } from "./services/chatApi";
@@ -17,6 +18,9 @@ function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState(
+    import.meta.env.DEV ? "ollama" : "openai"
+  );
   
   const [previousResponseId, setPreviousResponseId] = useState(null);
 
@@ -26,6 +30,8 @@ function App() {
 
   const inputRef = useRef(null);
   const lastMessageRef = useRef(null);
+  const activeRequestRef = useRef(0);
+  const requestControllerRef = useRef(null);
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -43,9 +49,18 @@ function App() {
     }
   }, [messages]);
 
+  useEffect(() => () => {
+    activeRequestRef.current += 1;
+    requestControllerRef.current?.abort();
+  }, []);
+
   const handleNewChat = () => {
+    activeRequestRef.current += 1;
+    requestControllerRef.current?.abort();
+    requestControllerRef.current = null;
     setMessages(initialMessages);
     setInput("");
+    setIsLoading(false);
     setPreviousResponseId(null);
     setSelectedMode("explain");
     setSelectedTopic(null);
@@ -62,6 +77,8 @@ const handleTopicSelect = (topic) => {
     improve: `Help me improve my ${topic} code`,
     error: `Explain an error in ${topic}`,
     quiz: `Quiz me on ${topic}`,
+    teach: `Teach me about ${topic}`,
+    plan: `Help me plan a ${topic} project`,
   };
 
   setInput(prompts[selectedMode] ?? `Explain ${topic}`);
@@ -72,6 +89,11 @@ const handleTopicSelect = (topic) => {
   const handleQuestionSelect = (question) => {
     setInput(question);
     inputRef.current?.focus();
+  };
+
+  const handleProviderSelect = (provider) => {
+    setSelectedProvider(provider);
+    setPreviousResponseId(null);
   };
 
   const handleSend = async () => {
@@ -92,16 +114,36 @@ const handleTopicSelect = (topic) => {
       userMessage,
     ]);
 
+    const requestId = activeRequestRef.current + 1;
+    activeRequestRef.current = requestId;
+    const requestController = new AbortController();
+    requestControllerRef.current = requestController;
+
     setInput("");
     setIsLoading(true);
 
     try {
-      const data = await sendChatMessage(
+      const conversationHistory =
+        selectedProvider === "ollama"
+          ? messages.slice(-20).map(({ role, message: content }) => ({
+              role,
+              content,
+            }))
+          : undefined;
+
+      const data = await sendChatMessage({
         message,
         previousResponseId,
-        selectedMode,
-        selectedTopic
-      );
+        mode: selectedMode,
+        topic: selectedTopic,
+        provider: selectedProvider,
+        conversationHistory,
+        signal: requestController.signal,
+      });
+
+      if (requestId !== activeRequestRef.current) {
+        return;
+      }
 
       setPreviousResponseId(data.responseId);
 
@@ -116,10 +158,14 @@ const handleTopicSelect = (topic) => {
         botMessage,
       ]);
     } catch (error) {
+      if (requestId !== activeRequestRef.current) {
+        return;
+      }
+
       const errorMessage = {
         id: Date.now() + 1,
         role: "assistant",
-      message: `⚠️ ${error.message}`,
+        message: `⚠️ ${error.message}`,
       };
 
       setMessages((currentMessages) => [
@@ -129,7 +175,10 @@ const handleTopicSelect = (topic) => {
 
       console.error(error);
     } finally {
-      setIsLoading(false);
+      if (requestId === activeRequestRef.current) {
+        requestControllerRef.current = null;
+        setIsLoading(false);
+      }
     }
   };
 
@@ -147,6 +196,12 @@ const handleTopicSelect = (topic) => {
             <DeveloperModeSelector
               selectedMode={selectedMode}
               onSelectMode={setSelectedMode}
+            />
+
+            <ChatProviderSelector
+              selectedProvider={selectedProvider}
+              onSelectProvider={handleProviderSelect}
+              disabled={isLoading}
             />
           </div>
 
@@ -208,13 +263,17 @@ const handleTopicSelect = (topic) => {
           >
             {isLoading && (
               <>
-                <span>DevPilot is thinking</span>
+                <FlyingLogo isLoading={isLoading} />
 
-                <span className="thinking-dots" aria-hidden="true">
-                  <span>.</span>
-                  <span>.</span>
-                  <span>.</span>
-                </span>
+                <div className="thinking-message-content">
+                  <span>DevPilot is thinking</span>
+
+                  <span className="thinking-dots" aria-hidden="true">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                  </span>
+                </div>
               </>
             )}
           </div>

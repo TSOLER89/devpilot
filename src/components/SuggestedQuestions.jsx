@@ -28,6 +28,18 @@ const questionsByMode = {
     "Quiz me on React",
     "Quiz me on REST APIs",
   ],
+
+  teach: [
+    "Teach me about dependency injection",
+    "Teach me React hooks",
+    "Teach me how REST APIs work",
+  ],
+
+  plan: [
+    "Help me plan a .NET API",
+    "Help me plan a React app",
+    "Help me plan a debugging strategy",
+  ],
 };
 
 function SuggestedQuestions({

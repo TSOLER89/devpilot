@@ -6,6 +6,8 @@ const modes = [
   { id: "improve", label: "Improve" },
   { id: "error", label: "Explain error" },
   { id: "quiz", label: "Quiz me" },
+  { id: "teach", label: "Teach" },
+  { id: "plan", label: "Plan" },
 ];
 
 function DeveloperModeSelector({

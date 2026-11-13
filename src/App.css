@@ -191,6 +191,37 @@
 
   gap: 16px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.provider-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.provider-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.provider-field select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.provider-field select:focus-visible {
+  outline: 2px solid var(--text-h);
+  outline-offset: 3px;
 }
 
 .developer-mode-selector {
@@ -466,6 +497,7 @@
 
   line-height: 1.7;
   color: var(--text);
+  white-space: pre-wrap;
 }
 
 .message.assistant p:last-child {
@@ -687,6 +719,9 @@
 ========================= */
 
 .thinking-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: fit-content;
 
   margin-bottom: 16px;
@@ -699,6 +734,15 @@
   border-radius: 14px;
 
   font-size: 14px;
+}
+
+.thinking-message .flying-logo {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.thinking-message-content {
+  white-space: nowrap;
 }
 
 .thinking-dots span {

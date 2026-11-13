@@ -1,14 +1,16 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env?.VITE_API_BASE_URL ??
+  (import.meta.env?.DEV ? "http://localhost:5279" : "");
 
-
-
-export async function sendChatMessage(
-  message, 
+export async function sendChatMessage({
+  message,
   previousResponseId,
   mode,
   topic,
-) 
-{
+  provider,
+  conversationHistory,
+  signal,
+}) {
   const response = await fetch(
     `${API_BASE_URL}/api/chat`,
     {
@@ -16,11 +18,14 @@ export async function sendChatMessage(
       headers: {
         "Content-Type": "application/json",
       },
+      signal,
       body: JSON.stringify({
         message,
         previousResponseId,
         mode,
         topic,
+        provider,
+        ...(provider === "ollama" ? { conversationHistory } : {}),
       }),
     }
   );
