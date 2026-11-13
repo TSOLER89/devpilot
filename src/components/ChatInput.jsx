@@ -36,11 +36,7 @@ const placeholder =
         id="chat-message"
         ref={inputRef}
         type="text"
-        placeholder={
-          isLoading
-            ? "DevPilot is preparing your response..."
-            : placeholder
-        }
+        placeholder={placeholder}
         value={input}
         onChange={(event) => setInput(event.target.value)}
         disabled={isLoading}
@@ -50,7 +46,7 @@ const placeholder =
         type="submit"
         disabled={isLoading || input.trim() === ""}
       >
-        {isLoading ? "Flying..." : "Send"}
+        Send
       </button>
     </form>
   );
