@@ -102,6 +102,130 @@
 
 
 /* =========================
+   VIEW NAVIGATION AND QUIZ
+========================= */
+
+.view-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.view-navigation button {
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.view-navigation button:hover {
+  background-color: var(--surface-hover);
+}
+
+.view-navigation button[aria-current="page"] {
+  border-color: var(--button-bg);
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.quiz-academy {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.quiz-introduction {
+  margin: 8px 0 24px;
+  color: var(--text-muted);
+}
+
+.quiz-card {
+  padding: clamp(16px, 4vw, 32px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background-color: var(--surface);
+}
+
+.quiz-progress {
+  margin-bottom: 20px;
+  color: var(--link);
+  font-weight: 600;
+}
+
+.quiz-question {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+}
+
+.quiz-question legend {
+  margin-bottom: 20px;
+  padding: 0;
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.quiz-answers {
+  display: grid;
+  gap: 12px;
+}
+
+.quiz-answer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.quiz-answer:hover {
+  background-color: var(--surface-hover);
+}
+
+.quiz-answer:has(input:checked) {
+  border-color: var(--link);
+  background-color: var(--user-bg);
+}
+
+.quiz-answer input {
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--button-bg);
+}
+
+.quiz-answer input:focus-visible {
+  outline: 2px solid var(--text-h);
+  outline-offset: 3px;
+}
+
+.quiz-next-button {
+  padding: 14px 22px;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.quiz-next-button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.quiz-next-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* =========================
    TOPIC ROUTE MENU
 ========================= */
 

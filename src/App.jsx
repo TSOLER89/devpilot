@@ -9,12 +9,14 @@ import SuggestedQuestions from "./components/SuggestedQuestions";
 import DeveloperModeSelector from "./components/DeveloperModeSelector";
 import ChatProviderSelector from "./components/ChatProviderSelector";
 import FlyingLogo from "./components/FlyingLogo";
+import QuizAcademy from "./components/QuizAcademy";
 
 import { sendChatMessage } from "./services/chatApi";
 
 const initialMessages = [];
 
 function App() {
+  const [activeView, setActiveView] = useState("chat");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
@@ -187,6 +189,24 @@ const handleTopicSelect = (topic) => {
       <Header onNewChat={handleNewChat} />
 
       <main className="main-content">
+        <nav className="view-navigation" aria-label="Main navigation">
+          <button
+            type="button"
+            aria-current={activeView === "chat" ? "page" : undefined}
+            onClick={() => setActiveView("chat")}
+          >
+            Chat
+          </button>
+          <button
+            type="button"
+            aria-current={activeView === "quiz" ? "page" : undefined}
+            onClick={() => setActiveView("quiz")}
+          >
+            Quiz Academy
+          </button>
+        </nav>
+
+        <div hidden={activeView !== "chat"}>
           <div className="learning-controls">
             <TopicSelector
               selectedTopic={selectedTopic}
@@ -291,6 +311,11 @@ const handleTopicSelect = (topic) => {
             </div>
           )}
         </section>
+        </div>
+
+        <div hidden={activeView !== "quiz"}>
+          <QuizAcademy />
+        </div>
       </main>
     </div>
   );
