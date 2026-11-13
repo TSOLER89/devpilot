@@ -14,8 +14,25 @@ import QuizAcademy from "./components/QuizAcademy";
 import { sendChatMessage } from "./services/chatApi";
 
 const initialMessages = [];
+const soundPreferenceKey = "devpilot.soundEnabled";
 
 function App() {
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    try {
+      return localStorage.getItem(soundPreferenceKey) === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(soundPreferenceKey, String(soundEnabled));
+    } catch {
+      // Keep the toggle usable when browser storage is unavailable.
+    }
+  }, [soundEnabled]);
+
   const [activeView, setActiveView] = useState("chat");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState(initialMessages);
@@ -186,7 +203,12 @@ const handleTopicSelect = (topic) => {
 
   return (
     <div className="app">
-      <Header onNewChat={handleNewChat} onHome={() => setActiveView("chat")} />
+      <Header
+        onNewChat={handleNewChat}
+        onHome={() => setActiveView("chat")}
+        soundEnabled={soundEnabled}
+        onToggleSound={() => setSoundEnabled((enabled) => !enabled)}
+      />
 
       <main className="main-content">
         <nav className="view-navigation" aria-label="Main navigation">
@@ -314,7 +336,7 @@ const handleTopicSelect = (topic) => {
         </div>
 
         <div hidden={activeView !== "quiz"}>
-          <QuizAcademy />
+          <QuizAcademy soundEnabled={soundEnabled} />
         </div>
       </main>
     </div>

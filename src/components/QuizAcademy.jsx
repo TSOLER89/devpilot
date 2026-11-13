@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { quizQuestions } from "../Data/quizQuestions";
+import { playQuizSound, stopQuizSounds } from "../services/quizSounds";
 
-function QuizAcademy() {
+function QuizAcademy({ soundEnabled = false }) {
+  const submittedQuestions = useRef(new Set());
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [recordedAnswers, setRecordedAnswers] = useState({});
@@ -13,12 +15,32 @@ function QuizAcademy() {
   const score = correctCount * 10;
   const accuracy = Math.round((correctCount / quizQuestions.length) * 100);
 
+  useEffect(() => {
+    if (!soundEnabled) {
+      stopQuizSounds();
+    }
+
+    return stopQuizSounds;
+  }, [soundEnabled]);
+
   const handleNextQuestion = (event) => {
     event.preventDefault();
 
     if (selectedAnswer === null || isCompleted) {
       return;
     }
+
+    // Refs update immediately, even before React renders the next question.
+    if (submittedQuestions.current.has(currentQuestion.id)) {
+      return;
+    }
+    submittedQuestions.current.add(currentQuestion.id);
+
+    void playQuizSound(
+      soundEnabled,
+      selectedAnswer === currentQuestion.correctAnswer,
+      currentQuestionIndex === quizQuestions.length - 1,
+    );
 
     setRecordedAnswers((answers) => ({
       ...answers,
@@ -29,6 +51,8 @@ function QuizAcademy() {
   };
 
   const handleRestart = () => {
+    stopQuizSounds();
+    submittedQuestions.current.clear();
     setCurrentQuestionIndex(0);
     setRecordedAnswers({});
     setSelectedAnswer(null);
@@ -72,7 +96,8 @@ function QuizAcademy() {
                 return (
                   <li className="quiz-review-item" key={question.id}>
                     <h4>{question.question}</h4>
-                    <p className="quiz-review-verdict">
+                    <p className={`quiz-review-verdict ${isCorrect ? "quiz-review-verdict--correct" : "quiz-review-verdict--incorrect"}`}>
+                      <span aria-hidden="true">{isCorrect ? "✓" : "✕"}</span>{" "}
                       {isCorrect ? "Correct" : "Incorrect"}
                     </p>
                     <p><strong>Your answer:</strong> {userAnswer}</p>

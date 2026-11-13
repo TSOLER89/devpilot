@@ -304,12 +304,29 @@
 }
 
 .quiz-review-verdict {
-  color: var(--link);
   font-weight: 600;
 }
 
+.quiz-review-verdict--correct {
+  color: #166534;
+}
+
+.quiz-review-verdict--incorrect {
+  color: #b42318;
+}
+
+@media (prefers-color-scheme: dark) {
+  .quiz-review-verdict--correct {
+    color: #86efac;
+  }
+
+  .quiz-review-verdict--incorrect {
+    color: #fda29b;
+  }
+}
+
 .quiz-explanation {
-  color: var(--text-muted);
+  color: var(--link);
 }
 
 /* =========================

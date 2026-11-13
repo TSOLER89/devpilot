@@ -1,24 +1,4 @@
-import { useEffect, useState } from "react";
-
-const soundPreferenceKey = "devpilot.soundEnabled";
-
-function Header({ onNewChat, onHome }) {
-  const [soundEnabled, setSoundEnabled] = useState(() => {
-    try {
-      return localStorage.getItem(soundPreferenceKey) === "true";
-    } catch {
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(soundPreferenceKey, String(soundEnabled));
-    } catch {
-      // Keep the toggle usable when browser storage is unavailable.
-    }
-  }, [soundEnabled]);
-
+function Header({ onNewChat, onHome, soundEnabled, onToggleSound }) {
   return (
     <header className="header">
       <div className="brand">
@@ -42,7 +22,7 @@ function Header({ onNewChat, onHome }) {
           aria-label="Sound effects"
           aria-pressed={soundEnabled}
           title={soundEnabled ? "Turn sound off" : "Turn sound on"}
-          onClick={() => setSoundEnabled((enabled) => !enabled)}
+          onClick={onToggleSound}
         >
           <svg
             width="20"
