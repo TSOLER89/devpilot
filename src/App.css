@@ -225,6 +225,53 @@
   cursor: not-allowed;
 }
 
+.quiz-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  margin: 0 0 28px;
+}
+
+.quiz-summary dt {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.quiz-summary dd {
+  margin: 4px 0 0;
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.quiz-review {
+  margin: 0 0 24px;
+  padding-left: 24px;
+}
+
+.quiz-review-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.quiz-review-item h4 {
+  margin: 0 0 12px;
+  color: var(--text-h);
+}
+
+.quiz-review-item p + p {
+  margin-top: 8px;
+}
+
+.quiz-review-verdict {
+  color: var(--link);
+  font-weight: 600;
+}
+
+.quiz-explanation {
+  color: var(--text-muted);
+}
+
 /* =========================
    TOPIC ROUTE MENU
 ========================= */
