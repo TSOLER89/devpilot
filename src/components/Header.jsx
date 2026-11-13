@@ -1,9 +1,16 @@
-function Header({ onNewChat }) {
+function Header({ onNewChat, onHome }) {
   return (
     <header className="header">
       <div className="brand">
         <h1>
+          <button
+            className="brand-home-button"
+            type="button"
+            onClick={onHome}
+            aria-label="DevPilot Home, go to Chat"
+          >
           DevPilot <span className="plane-icon">✈</span>
+          </button>
         </h1>
 
       </div>

@@ -186,7 +186,7 @@ const handleTopicSelect = (topic) => {
 
   return (
     <div className="app">
-      <Header onNewChat={handleNewChat} />
+      <Header onNewChat={handleNewChat} onHome={() => setActiveView("chat")} />
 
       <main className="main-content">
         <nav className="view-navigation" aria-label="Main navigation">

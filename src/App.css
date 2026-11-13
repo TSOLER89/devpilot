@@ -51,6 +51,16 @@
   color: var(--text-h);
 }
 
+.brand-home-button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
 .header p {
   margin: 6px 0 0;
   color: var(--text-muted);
