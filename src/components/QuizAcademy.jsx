@@ -17,6 +17,7 @@ function QuizAcademy({ soundEnabled = false }) {
   const isCompleted = currentQuestionIndex >= quizQuestions.length;
   const companionStage = !hasStarted ? "welcome" : isCompleted ? "completed" : "active";
   const currentQuestion = quizQuestions[currentQuestionIndex];
+  const progressPercent = Math.min(((currentQuestionIndex + 1) / quizQuestions.length) * 100, 100);
   const correctCount = quizQuestions.filter(
     (question) => recordedAnswers[question.id] === question.correctAnswer,
   ).length;
@@ -100,6 +101,20 @@ function QuizAcademy({ soundEnabled = false }) {
             ? "Flight Completed!"
             : `Question ${currentQuestionIndex + 1} of ${quizQuestions.length}`}
         </p>}
+
+        {hasStarted && (
+          <div
+            className="quiz-progress-bar"
+            role="progressbar"
+            aria-label="Quiz progress"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={progressPercent}
+            aria-valuetext={isCompleted ? "Quiz completed" : `Question ${currentQuestionIndex + 1} of ${quizQuestions.length}`}
+          >
+            <div className="quiz-progress-fill" style={{ width: `${progressPercent}%` }} />
+          </div>
+        )}
 
         {!hasStarted ? (
           <div className="quiz-welcome">
