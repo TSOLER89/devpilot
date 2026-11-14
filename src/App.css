@@ -230,8 +230,33 @@
   font-size: 14px;
 }
 
+.aviator-message {
+  display: block;
+  margin-top: 8px;
+  color: var(--text);
+}
+
+.quiz-welcome h3 {
+  margin: 0 0 12px;
+  color: var(--text-h);
+}
+
+.quiz-welcome p {
+  margin-bottom: 24px;
+}
+
 .aviator-companion--celebrating img {
   animation: aviator-bounce 600ms ease-out;
+}
+
+.aviator-companion--encouraging img {
+  animation: aviator-tilt 600ms ease-in-out;
+}
+
+@keyframes aviator-tilt {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-4deg); }
+  70% { transform: rotate(4deg); }
 }
 
 .aviator-feedback {
@@ -276,7 +301,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .aviator-companion img,
-  .aviator-companion--celebrating img {
+  .aviator-companion--celebrating img,
+  .aviator-companion--encouraging img {
     animation: none;
   }
 }

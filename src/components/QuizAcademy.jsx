@@ -7,11 +7,15 @@ function QuizAcademy({ soundEnabled = false }) {
   const submittedQuestions = useRef(new Set());
   const advanceTimer = useRef(null);
   const soundEnabledRef = useRef(soundEnabled);
+  const [hasStarted, setHasStarted] = useState(false);
   const [isCelebrating, setIsCelebrating] = useState(false);
+  const [isEncouraging, setIsEncouraging] = useState(false);
+  const isReacting = isCelebrating || isEncouraging;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [recordedAnswers, setRecordedAnswers] = useState({});
   const isCompleted = currentQuestionIndex >= quizQuestions.length;
+  const companionStage = !hasStarted ? "welcome" : isCompleted ? "completed" : "active";
   const currentQuestion = quizQuestions[currentQuestionIndex];
   const correctCount = quizQuestions.filter(
     (question) => recordedAnswers[question.id] === question.correctAnswer,
@@ -33,7 +37,7 @@ function QuizAcademy({ soundEnabled = false }) {
   const handleNextQuestion = (event) => {
     event.preventDefault();
 
-    if (selectedAnswer === null || isCompleted) {
+    if (!hasStarted || selectedAnswer === null || isCompleted) {
       return;
     }
 
@@ -49,6 +53,7 @@ function QuizAcademy({ soundEnabled = false }) {
     }));
     const advanceQuestion = () => {
       setIsCelebrating(false);
+      setIsEncouraging(false);
       if (currentQuestionIndex === quizQuestions.length - 1) {
         void playQuizCompletionSound(soundEnabledRef.current);
       }
@@ -60,18 +65,21 @@ function QuizAcademy({ soundEnabled = false }) {
       setIsCelebrating(true);
       advanceTimer.current = setTimeout(advanceQuestion, 650);
     } else {
-      advanceQuestion();
+      setIsEncouraging(true);
+      advanceTimer.current = setTimeout(advanceQuestion, 650);
     }
   };
 
   const handleRestart = () => {
     clearTimeout(advanceTimer.current);
     setIsCelebrating(false);
+    setIsEncouraging(false);
     stopQuizSounds();
     submittedQuestions.current.clear();
     setCurrentQuestionIndex(0);
     setRecordedAnswers({});
     setSelectedAnswer(null);
+    setHasStarted(true);
   };
 
   return (
@@ -80,15 +88,32 @@ function QuizAcademy({ soundEnabled = false }) {
       <p className="quiz-introduction">Practice the basics of C#, one question at a time.</p>
 
       <div className="quiz-companion-layout">
-        <AviatorCompanion compact={isCompleted} isCelebrating={isCelebrating} />
+        <AviatorCompanion
+          stage={companionStage}
+          compact={isCompleted}
+          isCelebrating={isCelebrating}
+          isEncouraging={isEncouraging}
+        />
         <div className="quiz-card">
-        <p className="quiz-progress" role="status" aria-atomic="true">
+        {hasStarted && <p className="quiz-progress" role="status" aria-atomic="true">
           {isCompleted
             ? "Flight Completed!"
             : `Question ${currentQuestionIndex + 1} of ${quizQuestions.length}`}
-        </p>
+        </p>}
 
-        {isCompleted ? (
+        {!hasStarted ? (
+          <div className="quiz-welcome">
+            <h3>C# beginner quiz</h3>
+            <p>Practice with five questions, then review your answers.</p>
+            <button
+              className="quiz-next-button"
+              type="button"
+              onClick={() => setHasStarted(true)}
+            >
+              Start Quiz
+            </button>
+          </div>
+        ) : isCompleted ? (
           <div className="quiz-results">
             <dl className="quiz-summary">
               <div>
@@ -134,7 +159,7 @@ function QuizAcademy({ soundEnabled = false }) {
           </div>
         ) : (
           <form onSubmit={handleNextQuestion}>
-            <fieldset className="quiz-question" key={currentQuestion.id} disabled={isCelebrating}>
+            <fieldset className="quiz-question" key={currentQuestion.id} disabled={isReacting}>
               <legend>{currentQuestion.question}</legend>
               <div className="quiz-answers">
                 {currentQuestion.answers.map((answer) => (
@@ -155,7 +180,7 @@ function QuizAcademy({ soundEnabled = false }) {
             <button
               className="quiz-next-button"
               type="submit"
-              disabled={selectedAnswer === null || isCelebrating}
+              disabled={selectedAnswer === null || isReacting}
             >
               Next Question
             </button>
