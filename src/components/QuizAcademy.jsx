@@ -82,7 +82,7 @@ function QuizAcademy({ soundEnabled = false }) {
     setCurrentQuestionIndex(0);
     setRecordedAnswers({});
     setSelectedAnswer(null);
-    setHasStarted(true);
+    setHasStarted(false);
   };
 
   return (
