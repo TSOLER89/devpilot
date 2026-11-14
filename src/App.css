@@ -201,38 +201,68 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
-  gap: 24px;
+  gap: 20px;
 }
 
 .aviator-companion {
-  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 220px;
   max-width: 100%;
   margin: 0;
-  padding-top: 6px;
   text-align: center;
-}
-
-.aviator-companion--compact {
-  width: 88px;
 }
 
 .aviator-companion img {
   display: block;
   width: 100%;
+  max-width: 192px;
   height: auto;
   border-radius: 12px;
   animation: aviator-float 4s ease-in-out infinite;
 }
 
-.aviator-companion figcaption {
-  margin-top: 8px;
-  color: var(--link);
+.aviator-companion--compact img {
+  max-width: 144px;
+}
+
+.aviator-speech-bubble {
+  position: relative;
+  order: -1;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background-color: var(--surface);
   font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.aviator-speech-bubble::after {
+  position: absolute;
+  bottom: -6px;
+  left: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.aviator-name {
+  color: var(--link);
+  font-weight: 600;
 }
 
 .aviator-message {
   display: block;
-  margin-top: 8px;
+  margin-top: 4px;
   color: var(--text);
 }
 
@@ -260,11 +290,13 @@
 }
 
 .aviator-feedback {
-  min-height: 1.5em;
-  margin-top: 8px;
+  display: block;
   color: var(--link);
-  font-size: 14px;
   font-weight: 600;
+}
+
+.aviator-feedback:not(:empty) {
+  margin-top: 8px;
 }
 
 @keyframes aviator-bounce {
@@ -283,19 +315,37 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .quiz-companion-layout {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
 
   .aviator-companion {
-    width: 88px;
+    display: grid;
+    grid-template-columns: clamp(88px, 25vw, 112px) minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+    max-width: 440px;
     justify-self: center;
   }
 
-  .aviator-companion--compact {
-    width: 64px;
+  .aviator-companion--compact img {
+    max-width: 96px;
+    justify-self: center;
+  }
+
+  .aviator-speech-bubble {
+    order: 0;
+    min-width: 0;
+  }
+
+  .aviator-speech-bubble::after {
+    top: calc(50% - 5px);
+    bottom: auto;
+    left: -6px;
+    border-right: 0;
+    border-left: 1px solid var(--border);
   }
 }
 

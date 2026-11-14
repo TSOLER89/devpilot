@@ -35,13 +35,13 @@ function AviatorCompanion({ stage = "active", compact = false, isCelebrating = f
         width={companion.width}
         height={companion.height}
       />
-      <figcaption>
-        {companion.name}
+      <figcaption className="aviator-speech-bubble">
+        <span className="aviator-name">{companion.name}</span>
         <span className="aviator-message">{companion.message}</span>
+        <span className="aviator-feedback" role="status" aria-atomic="true">
+          {isCelebrating ? "Great job!" : isEncouraging ? "Keep learning!" : ""}
+        </span>
       </figcaption>
-      <p className="aviator-feedback" role="status" aria-atomic="true">
-        {isCelebrating ? "Great job!" : isEncouraging ? "Keep learning!" : ""}
-      </p>
     </figure>
   );
 }
