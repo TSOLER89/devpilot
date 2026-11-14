@@ -14,6 +14,7 @@ function QuizAcademy({ soundEnabled = false }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [recordedAnswers, setRecordedAnswers] = useState({});
+  const [showReview, setShowReview] = useState(false);
   const isCompleted = currentQuestionIndex >= quizQuestions.length;
   const companionStage = !hasStarted ? "welcome" : isCompleted ? "completed" : "active";
   const currentQuestion = quizQuestions[currentQuestionIndex];
@@ -72,6 +73,7 @@ function QuizAcademy({ soundEnabled = false }) {
   };
 
   const handleRestart = () => {
+    setShowReview(false);
     clearTimeout(advanceTimer.current);
     setIsCelebrating(false);
     setIsEncouraging(false);
@@ -145,6 +147,22 @@ function QuizAcademy({ soundEnabled = false }) {
               </div>
             </dl>
 
+            <div className="quiz-results-actions">
+              <button
+                className="quiz-next-button"
+                type="button"
+                aria-expanded={showReview}
+                aria-controls="quiz-answer-review"
+                onClick={() => setShowReview((visible) => !visible)}
+              >
+                {showReview ? "Hide Answers" : "Review Answers"}
+              </button>
+              <button className="quiz-next-button" type="button" onClick={handleRestart}>
+                Try Again
+              </button>
+            </div>
+
+            <div id="quiz-answer-review" hidden={!showReview}>
             <h3>Question review</h3>
             <ol className="quiz-review">
               {quizQuestions.map((question) => {
@@ -167,10 +185,7 @@ function QuizAcademy({ soundEnabled = false }) {
                 );
               })}
             </ol>
-
-            <button className="quiz-next-button" type="button" onClick={handleRestart}>
-              Try Again
-            </button>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleNextQuestion}>

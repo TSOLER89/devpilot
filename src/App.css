@@ -447,6 +447,13 @@
   cursor: not-allowed;
 }
 
+.quiz-results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
 .quiz-summary {
   display: flex;
   flex-wrap: wrap;
