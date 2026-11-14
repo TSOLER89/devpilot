@@ -296,6 +296,35 @@
   margin-bottom: 24px;
 }
 
+.quiz-route-selector {
+  margin: 20px 0;
+}
+
+.quiz-route-selector label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.quiz-route-selector select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.quiz-route-selector select:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+}
+
 .aviator-companion--celebrating img {
   animation: aviator-bounce 600ms ease-out;
 }

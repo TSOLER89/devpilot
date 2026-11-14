@@ -3,11 +3,15 @@ import { quizQuestions } from "../Data/quizQuestions";
 import { playQuizCompletionSound, stopQuizSounds } from "../services/quizSounds";
 import AviatorCompanion from "./AviatorCompanion";
 
+const quizRoutes = ["C#", "JavaScript", "React", "SQL", ".NET"];
+
 function QuizAcademy({ soundEnabled = false }) {
   const submittedQuestions = useRef(new Set());
   const advanceTimer = useRef(null);
   const soundEnabledRef = useRef(soundEnabled);
   const [hasStarted, setHasStarted] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState("C#");
+  const canStartQuiz = selectedRoute === "C#";
   const [isCelebrating, setIsCelebrating] = useState(false);
   const [isEncouraging, setIsEncouraging] = useState(false);
   const isReacting = isCelebrating || isEncouraging;
@@ -120,12 +124,33 @@ function QuizAcademy({ soundEnabled = false }) {
 
         {!hasStarted ? (
           <div className="quiz-welcome">
-            <h3>C# beginner quiz</h3>
-            <p>Practice with five questions, then review your answers.</p>
+            <h3>{selectedRoute} beginner quiz</h3>
+            <div className="quiz-route-selector">
+              <label htmlFor="quiz-route">Choose your route</label>
+              <select
+                id="quiz-route"
+                value={selectedRoute}
+                onChange={(event) => setSelectedRoute(event.target.value)}
+              >
+                {quizRoutes.map((route) => (
+                  <option key={route} value={route}>
+                    {route === "C#" ? route : `${route} — Coming soon`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <p>
+              {canStartQuiz
+                ? "Practice with five questions, then review your answers."
+                : "This route is coming soon. Choose C# to start a quiz."}
+            </p>
             <button
               className="quiz-next-button"
               type="button"
-              onClick={() => setHasStarted(true)}
+              disabled={!canStartQuiz}
+              onClick={() => {
+                if (canStartQuiz) setHasStarted(true);
+              }}
             >
               Start Quiz
             </button>
