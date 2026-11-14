@@ -230,6 +230,25 @@
   font-size: 14px;
 }
 
+.aviator-companion--celebrating img {
+  animation: aviator-bounce 600ms ease-out;
+}
+
+.aviator-feedback {
+  min-height: 1.5em;
+  margin-top: 8px;
+  color: var(--link);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@keyframes aviator-bounce {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-10px); }
+  55% { transform: translateY(0); }
+  75% { transform: translateY(-4px); }
+}
+
 @keyframes aviator-float {
   0%, 100% {
     transform: translateY(0);
@@ -256,7 +275,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aviator-companion img {
+  .aviator-companion img,
+  .aviator-companion--celebrating img {
     animation: none;
   }
 }

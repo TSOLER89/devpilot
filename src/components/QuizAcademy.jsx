@@ -5,6 +5,9 @@ import AviatorCompanion from "./AviatorCompanion";
 
 function QuizAcademy({ soundEnabled = false }) {
   const submittedQuestions = useRef(new Set());
+  const advanceTimer = useRef(null);
+  const soundEnabledRef = useRef(soundEnabled);
+  const [isCelebrating, setIsCelebrating] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [recordedAnswers, setRecordedAnswers] = useState({});
@@ -17,12 +20,15 @@ function QuizAcademy({ soundEnabled = false }) {
   const accuracy = Math.round((correctCount / quizQuestions.length) * 100);
 
   useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
     if (!soundEnabled) {
       stopQuizSounds();
     }
 
     return stopQuizSounds;
   }, [soundEnabled]);
+
+  useEffect(() => () => clearTimeout(advanceTimer.current), []);
 
   const handleNextQuestion = (event) => {
     event.preventDefault();
@@ -37,19 +43,30 @@ function QuizAcademy({ soundEnabled = false }) {
     }
     submittedQuestions.current.add(currentQuestion.id);
 
-    if (currentQuestionIndex === quizQuestions.length - 1) {
-      void playQuizCompletionSound(soundEnabled);
-    }
-
     setRecordedAnswers((answers) => ({
       ...answers,
       [currentQuestion.id]: selectedAnswer,
     }));
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
-    setSelectedAnswer(null);
+    const advanceQuestion = () => {
+      setIsCelebrating(false);
+      if (currentQuestionIndex === quizQuestions.length - 1) {
+        void playQuizCompletionSound(soundEnabledRef.current);
+      }
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswer(null);
+    };
+
+    if (selectedAnswer === currentQuestion.correctAnswer) {
+      setIsCelebrating(true);
+      advanceTimer.current = setTimeout(advanceQuestion, 650);
+    } else {
+      advanceQuestion();
+    }
   };
 
   const handleRestart = () => {
+    clearTimeout(advanceTimer.current);
+    setIsCelebrating(false);
     stopQuizSounds();
     submittedQuestions.current.clear();
     setCurrentQuestionIndex(0);
@@ -63,7 +80,7 @@ function QuizAcademy({ soundEnabled = false }) {
       <p className="quiz-introduction">Practice the basics of C#, one question at a time.</p>
 
       <div className="quiz-companion-layout">
-        <AviatorCompanion compact={isCompleted} />
+        <AviatorCompanion compact={isCompleted} isCelebrating={isCelebrating} />
         <div className="quiz-card">
         <p className="quiz-progress" role="status" aria-atomic="true">
           {isCompleted
@@ -117,7 +134,7 @@ function QuizAcademy({ soundEnabled = false }) {
           </div>
         ) : (
           <form onSubmit={handleNextQuestion}>
-            <fieldset className="quiz-question" key={currentQuestion.id}>
+            <fieldset className="quiz-question" key={currentQuestion.id} disabled={isCelebrating}>
               <legend>{currentQuestion.question}</legend>
               <div className="quiz-answers">
                 {currentQuestion.answers.map((answer) => (
@@ -138,7 +155,7 @@ function QuizAcademy({ soundEnabled = false }) {
             <button
               className="quiz-next-button"
               type="submit"
-              disabled={selectedAnswer === null}
+              disabled={selectedAnswer === null || isCelebrating}
             >
               Next Question
             </button>
