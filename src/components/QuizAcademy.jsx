@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { quizQuestions } from "../Data/quizQuestions";
+import { quizQuestions as cSharpQuestions } from "../Data/quizQuestions";
+import { javascriptQuestions } from "../Data/javascriptQuestions";
 import { playQuizCompletionSound, stopQuizSounds } from "../services/quizSounds";
 import AviatorCompanion from "./AviatorCompanion";
 
 const quizRoutes = ["C#", "JavaScript", "React", "SQL", ".NET"];
+const questionsByRoute = {
+  "C#": cSharpQuestions,
+  JavaScript: javascriptQuestions,
+};
 
 function QuizAcademy({ soundEnabled = false }) {
   const submittedQuestions = useRef(new Set());
@@ -11,7 +16,8 @@ function QuizAcademy({ soundEnabled = false }) {
   const soundEnabledRef = useRef(soundEnabled);
   const [hasStarted, setHasStarted] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState("C#");
-  const canStartQuiz = selectedRoute === "C#";
+  const canStartQuiz = Object.hasOwn(questionsByRoute, selectedRoute);
+  const quizQuestions = questionsByRoute[selectedRoute] ?? cSharpQuestions;
   const [isCelebrating, setIsCelebrating] = useState(false);
   const [isEncouraging, setIsEncouraging] = useState(false);
   const isReacting = isCelebrating || isEncouraging;
@@ -91,8 +97,8 @@ function QuizAcademy({ soundEnabled = false }) {
 
   return (
     <section className="quiz-academy" aria-labelledby="quiz-title">
-      <h2 id="quiz-title">Quiz Academy</h2>
-      <p className="quiz-introduction">Practice the basics of C#, one question at a time.</p>
+      <h2 id="quiz-title">Quiz Academy — {selectedRoute}</h2>
+      <p className="quiz-introduction">Practice the basics of {selectedRoute}, one question at a time.</p>
 
       <div className="quiz-companion-layout">
         <AviatorCompanion
@@ -134,7 +140,7 @@ function QuizAcademy({ soundEnabled = false }) {
               >
                 {quizRoutes.map((route) => (
                   <option key={route} value={route}>
-                    {route === "C#" ? route : `${route} — Coming soon`}
+                    {Object.hasOwn(questionsByRoute, route) ? route : `${route} — Coming soon`}
                   </option>
                 ))}
               </select>
@@ -142,7 +148,7 @@ function QuizAcademy({ soundEnabled = false }) {
             <p>
               {canStartQuiz
                 ? "Practice with five questions, then review your answers."
-                : "This route is coming soon. Choose C# to start a quiz."}
+                : "This route is coming soon. Choose C# or JavaScript to start a quiz."}
             </p>
             <button
               className="quiz-next-button"
