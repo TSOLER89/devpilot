@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { quizQuestions } from "../Data/quizQuestions";
 import { playQuizCompletionSound, stopQuizSounds } from "../services/quizSounds";
+import AviatorCompanion from "./AviatorCompanion";
 
 function QuizAcademy({ soundEnabled = false }) {
   const submittedQuestions = useRef(new Set());
@@ -61,7 +62,9 @@ function QuizAcademy({ soundEnabled = false }) {
       <h2 id="quiz-title">Quiz Academy</h2>
       <p className="quiz-introduction">Practice the basics of C#, one question at a time.</p>
 
-      <div className="quiz-card">
+      <div className="quiz-companion-layout">
+        <AviatorCompanion compact={isCompleted} />
+        <div className="quiz-card">
         <p className="quiz-progress" role="status" aria-atomic="true">
           {isCompleted
             ? "Flight Completed!"
@@ -141,6 +144,7 @@ function QuizAcademy({ soundEnabled = false }) {
             </button>
           </form>
         )}
+        </div>
       </div>
     </section>
   );

@@ -184,6 +184,7 @@
 }
 
 .quiz-card {
+  min-width: 0;
   padding: clamp(16px, 4vw, 32px);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -194,6 +195,70 @@
   margin-bottom: 20px;
   color: var(--link);
   font-weight: 600;
+}
+
+.quiz-companion-layout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.aviator-companion {
+  width: 160px;
+  max-width: 100%;
+  margin: 0;
+  padding-top: 6px;
+  text-align: center;
+}
+
+.aviator-companion--compact {
+  width: 88px;
+}
+
+.aviator-companion img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  animation: aviator-float 4s ease-in-out infinite;
+}
+
+.aviator-companion figcaption {
+  margin-top: 8px;
+  color: var(--link);
+  font-size: 14px;
+}
+
+@keyframes aviator-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 640px) {
+  .quiz-companion-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .aviator-companion {
+    width: 88px;
+    justify-self: center;
+  }
+
+  .aviator-companion--compact {
+    width: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aviator-companion img {
+    animation: none;
+  }
 }
 
 .quiz-question {
