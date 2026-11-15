@@ -1,20 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { quizQuestions as cSharpQuestions } from "../Data/quizQuestions";
-import { javascriptQuestions } from "../Data/javascriptQuestions";
-import { reactQuestions } from "../Data/reactQuestions";
-import { sqlQuestions } from "../Data/sqlQuestions";
-import { dotnetQuestions } from "../Data/dotnetQuestions";
+import { getQuizQuestions, quizRoutes, quizDifficulties } from "../Data/quizCatalog";
 import { playQuizCompletionSound, stopQuizSounds } from "../services/quizSounds";
 import AviatorCompanion from "./AviatorCompanion";
-
-const quizRoutes = ["C#", "JavaScript", "React", "SQL", ".NET"];
-const questionsByRoute = {
-  "C#": cSharpQuestions,
-  JavaScript: javascriptQuestions,
-  React: reactQuestions,
-  SQL: sqlQuestions,
-  ".NET": dotnetQuestions,
-};
 
 function QuizAcademy({ soundEnabled = false }) {
   const submittedQuestions = useRef(new Set());
@@ -22,8 +9,9 @@ function QuizAcademy({ soundEnabled = false }) {
   const soundEnabledRef = useRef(soundEnabled);
   const [hasStarted, setHasStarted] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState("C#");
-  const canStartQuiz = Object.hasOwn(questionsByRoute, selectedRoute);
-  const quizQuestions = questionsByRoute[selectedRoute] ?? cSharpQuestions;
+  const [selectedDifficulty, setSelectedDifficulty] = useState("Beginner");
+  const quizQuestions = getQuizQuestions(selectedRoute, selectedDifficulty);
+  const canStartQuiz = quizQuestions.length > 0;
   const [isCelebrating, setIsCelebrating] = useState(false);
   const [isEncouraging, setIsEncouraging] = useState(false);
   const isReacting = isCelebrating || isEncouraging;
@@ -31,15 +19,15 @@ function QuizAcademy({ soundEnabled = false }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [recordedAnswers, setRecordedAnswers] = useState({});
   const [showReview, setShowReview] = useState(false);
-  const isCompleted = currentQuestionIndex >= quizQuestions.length;
+  const isCompleted = hasStarted && currentQuestionIndex >= quizQuestions.length;
   const companionStage = !hasStarted ? "welcome" : isCompleted ? "completed" : "active";
   const currentQuestion = quizQuestions[currentQuestionIndex];
-  const progressPercent = Math.min(((currentQuestionIndex + 1) / quizQuestions.length) * 100, 100);
+  const progressPercent = canStartQuiz ? Math.min(((currentQuestionIndex + 1) / quizQuestions.length) * 100, 100) : 0;
   const correctCount = quizQuestions.filter(
     (question) => recordedAnswers[question.id] === question.correctAnswer,
   ).length;
   const score = correctCount * 10;
-  const accuracy = Math.round((correctCount / quizQuestions.length) * 100);
+  const accuracy = canStartQuiz ? Math.round((correctCount / quizQuestions.length) * 100) : 0;
 
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
@@ -104,7 +92,7 @@ function QuizAcademy({ soundEnabled = false }) {
   return (
     <section className="quiz-academy" aria-labelledby="quiz-title">
       <h2 id="quiz-title">Put your seatbelt on and get ready to the test</h2>
-      <p className="quiz-introduction">Practice the basics of {selectedRoute}, one question at a time.</p>
+      <p className="quiz-introduction">Practice {selectedDifficulty.toLowerCase()} {selectedRoute}, one question at a time.</p>
 
       <div className="quiz-companion-layout">
         <AviatorCompanion
@@ -141,7 +129,7 @@ function QuizAcademy({ soundEnabled = false }) {
 
         {!hasStarted ? (
           <div className="quiz-welcome">
-            <h3>{selectedRoute} beginner quiz</h3>
+            <h3>{selectedRoute} {selectedDifficulty.toLowerCase()} quiz</h3>
             <div className="quiz-route-selector">
               <label htmlFor="quiz-route">Choose your route</label>
               <select
@@ -151,7 +139,23 @@ function QuizAcademy({ soundEnabled = false }) {
               >
                 {quizRoutes.map((route) => (
                   <option key={route} value={route}>
-                    {Object.hasOwn(questionsByRoute, route) ? route : `${route} — Coming soon`}
+                    {getQuizQuestions(route, selectedDifficulty).length > 0 ? route : `${route} — Coming soon`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="quiz-route-selector">
+              <label htmlFor="quiz-difficulty">Difficulty</label>
+              <select
+                id="quiz-difficulty"
+                value={selectedDifficulty}
+                onChange={(event) => setSelectedDifficulty(event.target.value)}
+              >
+                {quizDifficulties.map((difficulty) => (
+                  <option key={difficulty} value={difficulty}>
+                    {getQuizQuestions(selectedRoute, difficulty).length > 0
+                      ? difficulty
+                      : `${difficulty} — Coming soon`}
                   </option>
                 ))}
               </select>
@@ -159,7 +163,7 @@ function QuizAcademy({ soundEnabled = false }) {
             <p>
               {canStartQuiz
                 ? "Practice with five questions, then review your answers."
-                : "This route is coming soon. Choose an available route to start a quiz."}
+                : "This route and difficulty are coming soon. Choose an available combination to start a quiz."}
             </p>
             <button
               className="quiz-next-button"
