@@ -218,9 +218,11 @@ const handleTopicSelect = (topic) => {
         onHome={() => setActiveView("chat")}
         soundEnabled={soundEnabled}
         onToggleSound={handleToggleSound}
+        showNewChat={activeView === "chat"}
       />
 
-      <main className="main-content">
+      <div className="app-layout">
+        <aside className="app-sidebar">
         <nav className="view-navigation" aria-label="Main navigation">
           <button
             type="button"
@@ -237,7 +239,9 @@ const handleTopicSelect = (topic) => {
             Quiz Academy
           </button>
         </nav>
+        </aside>
 
+      <main className="main-content">
         <div hidden={activeView !== "chat"}>
           <div className="learning-controls">
             <TopicSelector
@@ -349,6 +353,7 @@ const handleTopicSelect = (topic) => {
           <QuizAcademy soundEnabled={soundEnabled} />
         </div>
       </main>
+      </div>
     </div>
   );
 }

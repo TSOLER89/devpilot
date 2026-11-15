@@ -1,4 +1,4 @@
-function Header({ onNewChat, onHome, soundEnabled, onToggleSound }) {
+function Header({ onNewChat, onHome, soundEnabled, onToggleSound, showNewChat }) {
   return (
     <header className="header">
       <div className="brand">
@@ -48,12 +48,12 @@ function Header({ onNewChat, onHome, soundEnabled, onToggleSound }) {
           </svg>
         </button>
 
-        <button
+        {showNewChat && <button
           className="new-chat-button"
           onClick={onNewChat}
         >
           + New Chat
-        </button>
+        </button>}
       </div>
     </header>
   );
