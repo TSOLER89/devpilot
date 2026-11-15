@@ -245,6 +245,8 @@ const handleTopicSelect = (topic) => {
             <DeveloperModeSelector selectedMode={selectedMode} onSelectMode={setSelectedMode} />
           </div>
 
+          <hr className="sidebar-section-divider" />
+
           <button
             className="quiz-navigation-button"
             type="button"
