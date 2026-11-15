@@ -3,6 +3,7 @@ import { quizQuestions as cSharpQuestions } from "../Data/quizQuestions";
 import { javascriptQuestions } from "../Data/javascriptQuestions";
 import { reactQuestions } from "../Data/reactQuestions";
 import { sqlQuestions } from "../Data/sqlQuestions";
+import { dotnetQuestions } from "../Data/dotnetQuestions";
 import { playQuizCompletionSound, stopQuizSounds } from "../services/quizSounds";
 import AviatorCompanion from "./AviatorCompanion";
 
@@ -12,6 +13,7 @@ const questionsByRoute = {
   JavaScript: javascriptQuestions,
   React: reactQuestions,
   SQL: sqlQuestions,
+  ".NET": dotnetQuestions,
 };
 
 function QuizAcademy({ soundEnabled = false }) {
@@ -152,7 +154,7 @@ function QuizAcademy({ soundEnabled = false }) {
             <p>
               {canStartQuiz
                 ? "Practice with five questions, then review your answers."
-                : "This route is coming soon. Choose C#, JavaScript, React or SQL to start a quiz."}
+                : "This route is coming soon. Choose an available route to start a quiz."}
             </p>
             <button
               className="quiz-next-button"
