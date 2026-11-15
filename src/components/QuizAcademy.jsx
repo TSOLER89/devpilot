@@ -103,7 +103,7 @@ function QuizAcademy({ soundEnabled = false }) {
 
   return (
     <section className="quiz-academy" aria-labelledby="quiz-title">
-      <h2 id="quiz-title">Quiz Academy — {selectedRoute}</h2>
+      <h2 id="quiz-title">Put your seatbelt on and get ready to the test</h2>
       <p className="quiz-introduction">Practice the basics of {selectedRoute}, one question at a time.</p>
 
       <div className="quiz-companion-layout">
