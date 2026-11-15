@@ -4,10 +4,11 @@ import { reactQuestions } from "./reactQuestions.js";
 import { sqlQuestions } from "./sqlQuestions.js";
 import { dotnetQuestions } from "./dotnetQuestions.js";
 import { cSharpIntermediateQuestions } from "./cSharpIntermediateQuestions.js";
+import { javascriptIntermediateQuestions } from "./javascriptIntermediateQuestions.js";
 
 const questionsByRoute = {
   "C#": { Beginner: cSharpQuestions, Intermediate: cSharpIntermediateQuestions },
-  JavaScript: { Beginner: javascriptQuestions },
+  JavaScript: { Beginner: javascriptQuestions, Intermediate: javascriptIntermediateQuestions },
   React: { Beginner: reactQuestions },
   SQL: { Beginner: sqlQuestions },
   ".NET": { Beginner: dotnetQuestions },

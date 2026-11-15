@@ -7,6 +7,7 @@ import { reactQuestions } from "./reactQuestions.js";
 import { sqlQuestions } from "./sqlQuestions.js";
 import { dotnetQuestions } from "./dotnetQuestions.js";
 import { cSharpIntermediateQuestions } from "./cSharpIntermediateQuestions.js";
+import { javascriptIntermediateQuestions } from "./javascriptIntermediateQuestions.js";
 
 test("every Beginner route keeps its original question set", () => {
   const expected = [quizQuestions, javascriptQuestions, reactQuestions, sqlQuestions, dotnetQuestions];
@@ -15,11 +16,12 @@ test("every Beginner route keeps its original question set", () => {
   });
 });
 
-test("only C# Intermediate is available beyond Beginner", () => {
+test("C# and JavaScript Intermediate are available; other higher difficulties remain unavailable", () => {
   assert.equal(getQuizQuestions("C#", "Intermediate"), cSharpIntermediateQuestions);
+  assert.equal(getQuizQuestions("JavaScript", "Intermediate"), javascriptIntermediateQuestions);
   for (const route of quizRoutes) {
     for (const difficulty of quizDifficulties.slice(1)) {
-      if (route === "C#" && difficulty === "Intermediate") continue;
+      if ((route === "C#" || route === "JavaScript") && difficulty === "Intermediate") continue;
       assert.deepEqual(getQuizQuestions(route, difficulty), [], `${route}/${difficulty}`);
     }
   }
