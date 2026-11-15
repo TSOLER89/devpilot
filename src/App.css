@@ -167,15 +167,18 @@
    VIEW NAVIGATION AND QUIZ
 ========================= */
 
-.view-navigation {
+.sidebar-content {
   position: sticky;
   top: 24px;
+}
+
+.view-navigation {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.view-navigation button {
+.view-navigation > button {
   min-height: 44px;
   padding: 10px 16px;
   border: 1px solid var(--border);
@@ -187,11 +190,11 @@
   cursor: pointer;
 }
 
-.view-navigation button:hover {
+.view-navigation > button:hover {
   background-color: var(--surface-hover);
 }
 
-.view-navigation button[aria-current="page"] {
+.view-navigation > button[aria-current="page"] {
   border-color: var(--button-bg);
   background-color: var(--button-bg);
   color: var(--button-text);
@@ -674,70 +677,72 @@
    LEARNING CONTROLS
 ========================= */
 
-.learning-controls {
+.sidebar-chat-settings:not([hidden]) {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 24px;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background-color: var(--surface);
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
-.learning-controls .topic-selector,
-.learning-controls .developer-mode-selector {
-  flex: 1 1 170px;
+.sidebar-chat-settings .topic-selector,
+.sidebar-chat-settings .developer-mode-selector {
+  width: 100%;
   min-width: 0;
-  width: auto;
   margin: 0;
 }
 
-.learning-controls .route-button,
-.learning-controls .mode-button {
-  box-sizing: border-box;
-  min-height: 40px;
-  padding: 9px 12px;
+.sidebar-chat-settings details[open] {
+  z-index: 40;
+}
+
+.sidebar-chat-settings .route-button,
+.sidebar-chat-settings .mode-button {
+  padding: 10px 8px;
   border: 1px solid var(--border);
-  background-color: var(--bg);
+  background-color: var(--surface);
   font-size: 14px;
-  line-height: 20px;
   text-align: left;
   overflow-wrap: anywhere;
 }
 
-.learning-controls .route-menu,
-.learning-controls .mode-menu {
+.sidebar-chat-settings .route-menu,
+.sidebar-chat-settings .mode-menu {
+  position: absolute;
   box-sizing: border-box;
-  top: calc(100% + 8px);
-  right: auto;
+  top: calc(100% + 4px);
   left: 0;
+  right: auto;
   width: 100%;
+  max-height: min(240px, 40svh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  box-shadow: var(--shadow);
 }
 
-.learning-controls .provider-controls {
-  flex: 1 1 250px;
-  min-width: 0;
-}
-
-.learning-controls .provider-field {
-  width: 100%;
-  min-width: 0;
-  gap: 8px;
-}
-
-.learning-controls .provider-field span {
-  white-space: nowrap;
-}
-
-.learning-controls .provider-field select {
-  flex: 1;
-  min-width: 0;
-  min-height: 40px;
-  background-color: var(--bg);
+.sidebar-chat-settings .route-menu button,
+.sidebar-chat-settings .mode-menu button {
+  padding: 8px;
   font: inherit;
   font-size: 14px;
+}
+
+.sidebar-chat-settings .provider-field {
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-chat-settings .provider-field select {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  font-size: 13px;
 }
 
 .provider-controls {
@@ -1365,15 +1370,19 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .view-navigation {
+  .sidebar-content {
     position: static;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .view-navigation button {
+  .view-navigation {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .view-navigation > button {
     text-align: center;
   }
+
 }
 
 @media (max-width: 768px) {

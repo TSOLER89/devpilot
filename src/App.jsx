@@ -225,6 +225,7 @@ const handleTopicSelect = (topic) => {
 
       <div className="app-layout">
         <aside className="app-sidebar">
+        <div className="sidebar-content">
         <nav className="view-navigation" aria-label="Main navigation">
           <button
             type="button"
@@ -233,29 +234,15 @@ const handleTopicSelect = (topic) => {
           >
             Chat
           </button>
-          <button
-            type="button"
-            aria-current={activeView === "quiz" ? "page" : undefined}
-            onClick={() => setActiveView("quiz")}
+          <div
+            id="sidebar-chat-settings"
+            className="sidebar-chat-settings"
+            role="group"
+            aria-label="Chat settings"
+            hidden={activeView !== "chat"}
           >
-            Quiz Academy
-          </button>
-        </nav>
-        </aside>
-
-      <main className="main-content">
-        <div className="chat-view" hidden={activeView !== "chat"}>
-          <div className="learning-controls" role="group" aria-label="Chat settings">
-            <TopicSelector
-              selectedTopic={selectedTopic}
-              onSelectTopic={handleTopicSelect}
-            />
-
-            <DeveloperModeSelector
-              selectedMode={selectedMode}
-              onSelectMode={setSelectedMode}
-            />
-
+            <TopicSelector selectedTopic={selectedTopic} onSelectTopic={handleTopicSelect} />
+            <DeveloperModeSelector selectedMode={selectedMode} onSelectMode={setSelectedMode} />
             <ChatProviderSelector
               selectedProvider={selectedProvider}
               onSelectProvider={handleProviderSelect}
@@ -263,6 +250,21 @@ const handleTopicSelect = (topic) => {
             />
           </div>
 
+          <button
+            className="quiz-navigation-button"
+            type="button"
+            aria-current={activeView === "quiz" ? "page" : undefined}
+            onClick={() => setActiveView("quiz")}
+          >
+            Quiz Academy
+          </button>
+        </nav>
+
+        </div>
+        </aside>
+
+      <main className="main-content">
+        <div className="chat-view" hidden={activeView !== "chat"}>
         <section className={`chat-panel${messages.length === 0 ? " chat-panel--empty" : ""}`}>
           {messages.length === 0 && (
             <div className="welcome-section">
