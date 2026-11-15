@@ -114,6 +114,11 @@ function QuizAcademy({ soundEnabled = false }) {
           isEncouraging={isEncouraging}
         />
         <div className="quiz-card">
+        {hasStarted && (
+          <button className="quiz-back-button" type="button" onClick={handleRestart}>
+            ← Back to Routes
+          </button>
+        )}
         {hasStarted && <p className="quiz-progress" role="status" aria-atomic="true">
           {isCompleted
             ? "Flight Completed!"
