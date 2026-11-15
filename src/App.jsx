@@ -108,7 +108,9 @@ const handleTopicSelect = (topic) => {
     plan: `Help me plan a ${topic} project`,
   };
 
-  setInput(prompts[selectedMode] ?? `Explain ${topic}`);
+  setInput((currentInput) => currentInput.trim() === ""
+    ? (prompts[selectedMode] ?? `Explain ${topic}`)
+    : currentInput);
 
   inputRef.current?.focus();
 };
@@ -278,6 +280,7 @@ const handleTopicSelect = (topic) => {
             <SuggestedQuestions
               onSelectQuestion={handleQuestionSelect}
               selectedMode={selectedMode}
+              selectedTopic={selectedTopic}
             />
           )}
 
