@@ -242,8 +242,8 @@ const handleTopicSelect = (topic) => {
         </aside>
 
       <main className="main-content">
-        <div hidden={activeView !== "chat"}>
-          <div className="learning-controls">
+        <div className="chat-view" hidden={activeView !== "chat"}>
+          <div className="learning-controls" role="group" aria-label="Chat settings">
             <TopicSelector
               selectedTopic={selectedTopic}
               onSelectTopic={handleTopicSelect}
