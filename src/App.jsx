@@ -232,7 +232,7 @@ const handleTopicSelect = (topic) => {
             aria-current={activeView === "chat" ? "page" : undefined}
             onClick={() => setActiveView("chat")}
           >
-            Chat
+            Destination
           </button>
           <div
             id="sidebar-chat-settings"
@@ -243,11 +243,6 @@ const handleTopicSelect = (topic) => {
           >
             <TopicSelector selectedTopic={selectedTopic} onSelectTopic={handleTopicSelect} />
             <DeveloperModeSelector selectedMode={selectedMode} onSelectMode={setSelectedMode} />
-            <ChatProviderSelector
-              selectedProvider={selectedProvider}
-              onSelectProvider={handleProviderSelect}
-              disabled={isLoading}
-            />
           </div>
 
           <button
@@ -259,6 +254,14 @@ const handleTopicSelect = (topic) => {
             Quiz Academy
           </button>
         </nav>
+
+          <div className="sidebar-provider" hidden={activeView !== "chat"}>
+            <ChatProviderSelector
+              selectedProvider={selectedProvider}
+              onSelectProvider={handleProviderSelect}
+              disabled={isLoading}
+            />
+          </div>
 
         </div>
         </aside>
