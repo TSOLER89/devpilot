@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using DevPilot.Api.Models;
 using Microsoft.Extensions.Options;
 
@@ -27,7 +28,7 @@ namespace DevPilot.Api.Services
         {
             var messages = new List<OllamaMessage>
             {
-                new("system", BuildSystemPrompt(mode, topic))
+                new("system", DevPilotInstructions.Build(mode, topic))
             };
 
             foreach (var historyMessage in
@@ -45,6 +46,28 @@ namespace DevPilot.Api.Services
 
             messages.Add(new OllamaMessage("user", message));
 
+            var scopeMessages = new List<OllamaMessage> { new("system", ProgrammingScope.Instructions) };
+            scopeMessages.AddRange(messages.Skip(1));
+            var decision = ProgrammingScope.ParseDecision(
+                await SendAsync(scopeMessages, cancellationToken, classify: true));
+
+            return new AiResult
+            {
+                Answer = decision switch
+                {
+                    "allow" => await SendAsync(messages, cancellationToken, classify: false),
+                    "redirect" => ProgrammingScope.RedirectMessage,
+                    _ => ProgrammingScope.ClarifyMessage
+                },
+                ResponseId = string.Empty
+            };
+        }
+
+        private async Task<string> SendAsync(
+            IReadOnlyList<OllamaMessage> messages,
+            CancellationToken cancellationToken,
+            bool classify)
+        {
             try
             {
                 using var response = await _httpClient.PostAsJsonAsync(
@@ -53,10 +76,10 @@ namespace DevPilot.Api.Services
                         _options.Model,
                         messages,
                         Stream: false,
-                        Options: new Dictionary<string, int>
-                        {
-                            ["num_predict"] = _options.NumPredict
-                        }),
+                        Options: classify
+                            ? new Dictionary<string, object> { ["num_predict"] = 40, ["temperature"] = 0 }
+                            : new Dictionary<string, object> { ["num_predict"] = _options.NumPredict },
+                        Format: classify ? ProgrammingScope.ResponseFormat : null),
                     cancellationToken);
 
                 if (!response.IsSuccessStatusCode)
@@ -100,11 +123,7 @@ namespace DevPilot.Api.Services
                         "Ollama returned an empty response.");
                 }
 
-                return new AiResult
-                {
-                    Answer = answer.Trim(),
-                    ResponseId = string.Empty
-                };
+                return answer.Trim();
             }
             catch (HttpRequestException exception)
             {
@@ -137,47 +156,12 @@ namespace DevPilot.Api.Services
                 : errorBody;
         }
 
-        private static string BuildSystemPrompt(string mode, string? topic)
-        {
-            var modeInstruction = (mode ?? "explain").ToLowerInvariant() switch
-            {
-                "debug" =>
-                    "Help identify the root cause of bugs. Explain the evidence and provide a focused, verifiable fix.",
-                "improve" =>
-                    "Review the code or approach and suggest practical, focused improvements with reasons.",
-                "error" =>
-                    "Explain the error in approachable language, identify likely causes, and give concrete troubleshooting steps.",
-                "quiz" =>
-                    "Act as a programming tutor. Ask one question at a time and do not reveal its answer until the user responds.",
-                "teach" =>
-                    "Teach the concept step by step, with a small example and a brief check for understanding when useful.",
-                "plan" =>
-                    "Create a clear, ordered, actionable plan. State important assumptions and keep each step practical.",
-                _ =>
-                    "Explain the programming concept clearly, accurately, and at an appropriate level for the question."
-            };
-
-            var topicInstruction = string.IsNullOrWhiteSpace(topic)
-                ? "No specific learning route is selected."
-                : $"The user selected the {topic} learning route. Prefer relevant examples from this topic.";
-
-            return $"""
-                You are DevPilot, a professional and helpful programming assistant.
-                Focus on C#, .NET, ASP.NET Core, React, JavaScript, APIs, debugging, and software development.
-                Current mode: {modeInstruction}
-                Current route: {topicInstruction}
-
-                Write clear, concise answers. Use Markdown headings and lists when they improve readability.
-                Use inline code for identifiers and fenced code blocks for multi-line examples.
-                Explain code examples and avoid inventing APIs or unsupported facts.
-                """;
-        }
-
         private sealed record OllamaChatRequest(
             string Model,
             IReadOnlyList<OllamaMessage> Messages,
             bool Stream,
-            Dictionary<string, int> Options);
+            Dictionary<string, object> Options,
+            [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] object? Format);
 
         private sealed record OllamaMessage(string Role, string Content);
 
